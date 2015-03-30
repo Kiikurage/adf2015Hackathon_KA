@@ -52,6 +52,7 @@ Application.prototype.initEventHandler_ = function() {
 	this.$userNameInput = document.querySelector('#userNameInput');
 	this.$entranceForm.addEventListener('submit', this.onEntranceFormSubmit = this.onEntranceFormSubmit.bind(this));
 	document.body.addEventListener('keydown', this.onKeydown = this.onKeydown.bind(this));
+	document.body.addEventListener('keyup', this.onKeyUp = this.onKeyUp.bind(this));
 };
 
 /**
@@ -74,7 +75,7 @@ Application.prototype.enterGame = function(userName) {
 
 	this.socket.emit('enterGame', userName, function(userId, userName) {
 		self.me = new User(userId, userName, 0, 0, 0);
-		self.room = new Room(self.socket);
+		self.room = new Room(self.socket, self.me);
 	});
 };
 
@@ -91,36 +92,18 @@ Application.prototype.onEntranceFormSubmit = function(ev) {
 	return false;
 };
 
+Application.prototype.onKeyUp = function(ev) {
+	if (this.room && this.room.game) {
+		this.room.game.onKeyUp(ev.which || ev.keyCode);
+	}
+};
+
 Application.prototype.onKeydown = function(ev) {
-	var KEYCODE_LEFT = 37,
-		KEYCODE_UP = 38,
-		KEYCODE_RIGHT = 39,
-		KEYCODE_DOWN = 40,
-		me = this.me;
-
-	switch (ev.which || ev.keyCode) {
-		case KEYCODE_LEFT:
-			me.setPosition(me.x - 10, me.y);
-			break;
-
-		case KEYCODE_UP:
-			me.setPosition(me.x, me.y - 10);
-			break;
-
-		case KEYCODE_RIGHT:
-			me.setPosition(me.x + 10, me.y);
-			break;
-
-		case KEYCODE_DOWN:
-			me.setPosition(me.x, me.y + 10);
-			break;
+	if (this.room && this.room.game) {
+		this.room.game.onKeyDown(ev.which || ev.keyCode);
 	}
 
-	var payload = {
-		x: me.x,
-		y: me.y
-	};
-	this.socket.emit('userMoved', payload);
+	ev.stopPropagation();
 };
 
 /**

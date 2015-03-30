@@ -32,6 +32,14 @@ User.records_ = {};
  */
 User.RADIUS = 20;
 
+User.SPEED = 50;
+
+
+User.prototype.setPosition = function(x, y) {
+	this.x = x;
+	this.y = y;
+};
+
 /**
  *	IDを指定してモデルを取り出す
  *	@param {string} userId ID

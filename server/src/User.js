@@ -44,15 +44,12 @@ function User(socket, name, x, y, teamId) {
 
 User.RADIUS = 20;
 
-User.prototype.setPosition = function(x, y) {
-	this.x = x;
-	this.y = y;
-};
-
 User.prototype.initEventHandler_ = function() {
+	var self = this;
+
 	this.socket.on('move', function(x, y, res) {
-		this.x = x;
-		this.y = y;
+		self.x = x;
+		self.y = y;
 	});
 };
 

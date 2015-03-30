@@ -10,7 +10,7 @@ function Pad(id, x, y, vx, vy) {
 };
 
 Pad.records_ = {};
-Pad.RADIUS = 5;
+Pad.RADIUS = 8;
 
 Pad.getById = function(padId) {
 	return this.records_[padId] || null;
