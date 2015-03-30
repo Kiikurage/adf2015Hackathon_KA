@@ -52,7 +52,7 @@ Game.prototype.addUser = function(user) {
 	user.socket.broadcast.emit('enterUser', {
 		userId: user.id,
 		name: user.name,
-		x: user.x
+		x: user.x,
 		y: user.y
 	});
 };
