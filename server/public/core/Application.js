@@ -72,7 +72,7 @@ Application.prototype.enterGame = function(userName) {
 	var self = this;
 
 	this.socket.emit('enterGame', userName, function(userId, userName) {
-		self.me = new User(userId, userName);
+		self.me = new User(userId, userName, 0, 0, 0);
 		self.room = new Room(self.socket);
 	});
 };
