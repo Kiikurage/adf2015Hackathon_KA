@@ -9,9 +9,11 @@ app.use(express.static(__dirname + '/public'));
 var game = new Game();
 
 io.on('connection', function(socket) {
-	socket.on('enterGame', 　function(data, response) {
+	socket.on('enterGame', function(data, response) {
 		var newUser = game.addUserBySocket(socket, data);
-		response(newUser.id, newUser.name);
+		var x = 0; // 初期の座標
+		var y = 0;
+		response(newUser.id, newUser.name, x, y);
 	});
 
 	socket.on('getUserList', 　function(response) {
