@@ -76,11 +76,21 @@ Canvas.drawField = function(users, pads) {
 		ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Game.WIDTH);
 		ctx.stroke();
 
-
 		//clearRect(x, y, width, height)
 		//ctx.clearRect(45,45,fieldWidth-100,fieldHeight-100);
 
 		// ctx.strokeRect(50,50,50,50);
+
+		// //Draw Points
+		// ctx.font = "48px serif";
+		// //上下
+		// ctx.fillText("TEAM 1 : " + "10 " + "Pts", Canvas.fieldOx + Canvas.sideLength / 2, Canvas.barWidth);
+		// ctx.fillText("TEAM 3 : " + "10 " + "Pts", Canvas.fieldOx + Canvas.sideLength / 2, Canvas.fieldOy + Game.HEIGHT + 3 * Canvas.barWidth);
+		// //左右
+		// ctx.fillText("TEAM 2", Canvas.fieldOx + Game.WIDTH + 2 * Canvas.barWidth, Canvas.fieldOy + Canvas.sideLength);
+		// ctx.fillText("10 " + "Pts", Canvas.fieldOx + Game.WIDTH + 2 * Canvas.barWidth, Canvas.fieldOy + Canvas.sideLength + 2 * Canvas.barWidth);
+		// ctx.fillText("TEAM 4", 10, Canvas.fieldOy + Canvas.sideLength);
+		// ctx.fillText("10 " + "Pts", 10, Canvas.fieldOy + Canvas.sideLength + 2 * Canvas.barWidth);
 	}
 	users.forEach(function(user) {
 		Canvas.drawUser(user);

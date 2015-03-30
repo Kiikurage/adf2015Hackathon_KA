@@ -4,14 +4,134 @@
 <head>
 	<title>Socket.IO chat</title>
 	<meta charset="utf-8">
+	<style>
+		body {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			background: #f0f0f0;
+		}
+		
+		#container {
+			display: flex;
+			position: relative;
+			flex-direction: column;
+			align-items: center;
+			width: 800px;
+			height: 800px;
+		}
+		
+		#userNameInput {
+			line-height: 20px;
+			flex: 1;
+			padding: 5px 20px;
+			font-size: 30px;
+			margin-bottom: 5px;
+			border: none;
+			outline: none;
+			text-align: center;
+			font-family: inherit;
+		}
+		
+		#entranceForm {
+			display: flex;
+			flex-direction: row;
+			position: relative;
+			width: 620px;
+			margin-bottom: 20px;
+			justify-content: stretch;
+			border-bottom: 1px solid #4d90fe;
+			background: #fff;
+		}
+		
+		#submit {
+			line-height: 20px;
+			display: block;
+			position: relative;
+			border: none;
+			background: none;
+			color: #4d90fe;
+			padding: 10px 10px;
+			font-size: 30px;
+			cursor: pointer;
+		}
+		
+		#canvasContainer {
+			position: relative;
+			background: #000;
+			width: 600px;
+			height: 600px;
+			padding: 10px;
+		}
+		
+		#canvasField {
+			position: relative;
+			width: 600px;
+			height: 600px;
+			background: #fff;
+		}
+		
+		#scoreContainer {
+			display: block;
+			width: 620px;
+			position: relative;
+			flex-direction: row;
+			backgorund: #000;
+		}
+		
+		#scoreContainer div {
+			display: block;
+			float: left;
+			text-align: center;
+			position: relative;
+			width: 155px;
+		}
+		
+		#scoreContainer div p {
+			position: relative;
+			width: 155px;
+		}
+	</style>
 </head>
 
 <body style="width:100%;height:100%;overflow:hidden;">
-	<form id="entranceForm">
-		<input id="userNameInput" type="name" placheolder="your name">
-		<input type="submit" value="enter">
-	</form>
-	<canvas id="canvasField" width="1500" height="1500"></canvas>
+	<div id="container">
+		<form id="entranceForm">
+			<input id="userNameInput" type="name" placheolder="your name">
+			<input id="submit" type="submit" value="enter">
+		</form>
+		<div id="canvasContainer">
+			<canvas id="canvasField" width="600" height="600"></canvas>
+		</div>
+		<div id="scoreContainer">
+			<div>
+				<p>
+					Team1:
+				</p>
+				<span id="score1">0</span>
+			</div>
+			<div>
+				<p>
+					Team2:
+				</p>
+				<span id="score2">0</span>
+			</div>
+			<div>
+				<p>
+					Team3:
+				</p>
+				<span id="score3">0</span>
+			</div>
+			<div>
+				<p>
+					Team4:
+				</p>
+				<span id="score4">0</span>
+			</div>
+
+		</div>
+	</div>
 
 	<script src="./configs.js"></script>
 	<script src="./util.js"></script>

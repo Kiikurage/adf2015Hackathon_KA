@@ -3,12 +3,12 @@ var User = require('./User.js'),
 
 var abs = Math.abs,
 	sqrt = Math.sqrt,
-	pow = Math.power,
+	pow = Math.pow,
 	teamMemberCounts = [0, 0, 0, 0],
 	teamScores = [0, 0, 0, 0];
 
 function Game() {
-	if (!(this instanceof Game)) return new Game(socket);
+	if (!(this instanceof Game)) return new Game();
 
 	/**
 	 *	フィールド横幅
@@ -33,8 +33,6 @@ function Game() {
 	 *	@type {Array<Pad>}
 	 */
 	this.pads = [];
-
-	// setInterval(this.sendPadPosition = this.sendPadPosition.bind(this), 5000);
 }
 
 /**
@@ -45,9 +43,6 @@ Game.prototype.addUser = function(user) {
 	this.removeUser(user);
 
 	this.users.push(user);
-
-	user.x = 0;
-	user.y = 0;
 
 	var i, minI, minTeamMemberCount = 99999;
 	for (i = 0; i < 4; i++) {

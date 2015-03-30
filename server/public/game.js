@@ -31,8 +31,8 @@ function Game() {
 	}.bind(this), 16);
 };
 
-Game.WIDTH = 400;
-Game.HEIGHT = 400;
+Game.WIDTH = 600;
+Game.HEIGHT = 600;
 
 Game.instance_;
 

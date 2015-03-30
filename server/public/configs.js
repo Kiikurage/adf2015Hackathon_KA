@@ -1,6 +1,6 @@
 var config = {
-	fieldOx: 30,
-	fieldOy: 30,
+	fieldOx: 0,
+	fieldOy: 0,
 	goalSize: 100,
 	barWidth: 10
 };
