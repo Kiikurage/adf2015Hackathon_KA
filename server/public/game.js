@@ -14,7 +14,11 @@ function Game() {
 		new Pad(2, 50, 0, 23, 27),
 		new Pad(3, 50, 50, -25, 28)
 	];
-	for (i = 0; i < 100; i++) this.pads.push(new Pad(i, Math.random() * 500, Math.random() * 500, Math.random() * 100 - 50, Math.random() * 100 - 50));
+	for (i = 0; i < 10; i++) {
+		p = Math.random() * 2 * Math.PI;
+		this.pads.push(new Pad(i, Math.random() * Game.WIDTH, Math.random() * Game.HEIGHT, Math.cos(p) * 100, Math.sin(p) * 100));
+	}
+
 	this.me;
 
 	this.flagLeftKey = false;
@@ -27,8 +31,8 @@ function Game() {
 	}.bind(this), 16);
 };
 
-Game.WIDTH = 1000;
-Game.HEIGHT = 1000;
+Game.WIDTH = 400;
+Game.HEIGHT = 400;
 
 Game.instance_;
 
