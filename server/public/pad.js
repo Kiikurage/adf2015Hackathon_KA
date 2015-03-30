@@ -30,7 +30,7 @@ Pad.setPosition = function(x, y) {
 	this.y = y;
 };
 
-Pad.update = function() {
+/*Pad.update = function() {
 	this.x += this.dx;
 	this.y += this.dy;
-};
+};*/
