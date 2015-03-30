@@ -38,8 +38,8 @@ io.on('connection', function(socket) {
 		}
 
 		var setInRange = function(x) {
-			if (x < 0) { return 0; }
-			if (x > 400) { return 400; }
+			if (x < 20) { return 20; }
+			if (x > 380) { return 380; }
 			return x;
 		};
 		user.x = setInRange(data.x);

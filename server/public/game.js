@@ -105,6 +105,15 @@ Game.prototype.updateUserPositions = function() {
 	if (this.flagRightKey) me.x += User.SPEED * 0.1;
 	if (this.flagDownKey) me.y += User.SPEED * 0.1;
 
+	var setInRange = function(x) {
+		if (x < 20) { return 20; }
+		if (x > 380) { return 380; }
+		return x;
+	};
+
+	me.x = setInRange(me.x);
+	me.y = setInRange(me.y);
+
 	if (this.flagLeftKey || this.flagUpKey || this.flagRightKey || this.flagDownKey) {
 		var payload = {
 			x: me.x,
