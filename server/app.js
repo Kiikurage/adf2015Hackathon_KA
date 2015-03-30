@@ -8,7 +8,7 @@ app.use(express.static(__dirname + '/public'));
 
 var game = new Game(io);
 setInterval(function() {
-	game.updatePadPositions()
+	game.updatePadPositions();
 }, 16);
 
 io.on('connection', function(socket) {

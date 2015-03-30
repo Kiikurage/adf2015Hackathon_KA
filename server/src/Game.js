@@ -29,7 +29,12 @@ function Game(io) {
 	 *	パッドの一覧
 	 *	@type {Array<Pad>}
 	 */
-	this.pads = [];
+	this.pads = [
+			new Pad(0, 0, 0, 40, 24),
+			new Pad(1, 0, 50, 53, 10),
+			new Pad(2, 50, 0, 23, 27),
+			new Pad(3, 50, 50, -25, 28)
+		];
 
 	this.io = io;
 
@@ -234,20 +239,21 @@ Game.prototype.updatePadPositions = function() {
 	}
 
 	this.io.emit('scoreUpdated', teamScores);
+	this.sendPadPosition();
 };
 
 /**
  *	パッドの位置を配信する
  */
-// Game.prototype.sendPadPosition = function() {
-// 	var positionMap = {};
-// 	this.pads.forEach(function(pad) {
-// 		positionMap[pad.id] = {
-// 			x: pad.x,
-// 			y: pad.y
-// 		}
-// 	});
-// 	this.emitAll('padsPosition', positionMap);
-// };
+Game.prototype.sendPadPosition = function() {
+	var positionMap = {};
+	this.pads.forEach(function(pad) {
+		positionMap[pad.id] = {
+			x: pad.x,
+			y: pad.y
+		};
+	});
+	this.io.emit('padsPosition', positionMap);
+};
 
 module.exports = Game;
