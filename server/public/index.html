@@ -4,13 +4,15 @@
 <head>
 	<title>Socket.IO chat</title>
 	<meta charset="utf-8">
+	<script src="./core/drawField.js"></script>
 </head>
 
-<body>
+<body onload="drawField();">
 	<form id="entranceForm">
 		<input id="userNameInput" type="name" placheolder="your name">
 		<input type="submit" value="enter">
 	</form>
+	<canvas id="canvasField" width="1500" height="1500"></canvas>
 
 	<script src="./util.js"></script>
 	<script src="./lib/socket.io.js"></script>
