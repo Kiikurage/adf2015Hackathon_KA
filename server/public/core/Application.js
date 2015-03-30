@@ -77,6 +77,7 @@ Application.prototype.enterGame = function(userName) {
 	var y = Math.floor(Math.random() * 400);
 
 	this.socket.emit('enterGame', userName, x, y, function(userId, userName) {
+		document.body.className = '';
 		document.querySelector('#entranceForm').parentNode.removeChild(document.querySelector('#entranceForm'));
 		self.me = new User(userId, userName, x, y, 0);
 		self.room = new Room(self.socket, self.me);

@@ -17,6 +17,7 @@
 			display: flex;
 			position: relative;
 			flex-direction: column;
+			justify-content: center;
 			align-items: center;
 			width: 800px;
 			height: 800px;
@@ -41,8 +42,8 @@
 			width: 620px;
 			margin-bottom: 20px;
 			justify-content: stretch;
-			border-bottom: 1px solid #4d90fe;
 			background: #fff;
+			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 		}
 		
 		#submit {
@@ -51,7 +52,7 @@
 			position: relative;
 			border: none;
 			background: none;
-			color: #4d90fe;
+			color: #000;
 			padding: 10px 10px;
 			font-size: 30px;
 			cursor: pointer;
@@ -62,7 +63,11 @@
 			background: #000;
 			width: 600px;
 			height: 600px;
-			padding: 10px;
+			border-top: 10px solid #f00;
+			border-right: 10px solid #0f0;
+			border-bottom: 10px solid #00f;
+			border-left: 10px solid #ff0;
+			margin-bottom: 10px;
 		}
 		
 		#canvasField {
@@ -80,6 +85,11 @@
 			backgorund: #000;
 		}
 		
+		body.-noLogin #canvasContainer,
+		body.-noLogin #scoreContainer {
+			display: none;
+		}
+		
 		#scoreContainer div {
 			display: block;
 			float: left;
@@ -92,10 +102,30 @@
 			position: relative;
 			width: 155px;
 		}
+		
+		#scoreBox1 {
+			background: #F00;
+			color: #fff;
+		}
+		
+		#scoreBox2 {
+			background: #0F0;
+			color: #fff;
+		}
+		
+		#scoreBox3 {
+			background: #00F;
+			color: #fff;
+		}
+		
+		#scoreBox4 {
+			background: #FF0;
+			color: #fff;
+		}
 	</style>
 </head>
 
-<body style="width:100%;height:100%;overflow:hidden;">
+<body style="width:100%;height:100%;overflow:hidden;" class="-noLogin">
 	<div id="container">
 		<form id="entranceForm">
 			<input id="userNameInput" type="name" placheolder="your name">
@@ -105,25 +135,25 @@
 			<canvas id="canvasField" width="600" height="600"></canvas>
 		</div>
 		<div id="scoreContainer">
-			<div>
+			<div id="scoreBox1">
 				<p>
 					Team1:
 				</p>
 				<span id="score1">0</span>
 			</div>
-			<div>
+			<div id="scoreBox2">
 				<p>
 					Team2:
 				</p>
 				<span id="score2">0</span>
 			</div>
-			<div>
+			<div id="scoreBox3">
 				<p>
 					Team3:
 				</p>
 				<span id="score3">0</span>
 			</div>
-			<div>
+			<div id="scoreBox4">
 				<p>
 					Team4:
 				</p>

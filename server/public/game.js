@@ -9,10 +9,10 @@ var abs = Math.abs,
 
 function Game() {
 	this.pads = [
-		new Pad(0, 0, 0, 40, 24),
-		new Pad(1, 0, 50, 53, 10),
-		new Pad(2, 50, 0, 23, 27),
-		new Pad(3, 50, 50, -25, 28)
+		new Pad(1, 0, 0, 40, 24),
+		new Pad(2, 0, 50, 53, 10),
+		new Pad(3, 50, 0, 23, 27),
+		new Pad(4, 50, 50, -25, 28)
 	];
 	for (i = 0; i < 10; i++) {
 		p = Math.random() * 2 * Math.PI;
@@ -30,8 +30,17 @@ function Game() {
 		this.update();
 	}.bind(this), 16);
 
-	app.socket.on('padsPosition', function(data) {
-		console.log(data);
+	var pads = this.pads;
+	app.socket.on('padsPosition', function(datas) {
+		// console.log(datas);
+		Object.keys(datas).forEach(function(padId) {
+			var data = datas[padId],
+				pad = Pad.getById(padId);
+			pad.x = data.x;
+			pad.y = data.y;
+			pad.vx = data.vx;
+			pad.vy = data.vy;
+		});
 	});
 };
 
