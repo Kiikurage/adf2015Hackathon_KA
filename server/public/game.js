@@ -29,6 +29,10 @@ function Game() {
 	setInterval(function() {
 		this.update();
 	}.bind(this), 16);
+
+	app.socket.on('padsPosition', function(data) {
+		console.log(data);
+	});
 };
 
 Game.WIDTH = 600;
@@ -106,8 +110,12 @@ Game.prototype.updateUserPositions = function() {
 	if (this.flagDownKey) me.y += User.SPEED * 0.1;
 
 	var setInRange = function(x) {
-		if (x < 20) { return 20; }
-		if (x > 380) { return 380; }
+		if (x < 20) {
+			return 20;
+		}
+		if (x > 380) {
+			return 380;
+		}
 		return x;
 	};
 

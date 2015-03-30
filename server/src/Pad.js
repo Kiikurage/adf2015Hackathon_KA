@@ -1,19 +1,14 @@
-var GUID = require('guid');
+var GUID = require('guid'),
+	Game = require('./Game.js');
 
-function Pad(io) {
+function Pad(id, x, y, vx, vy) {
 	if (!(this instanceof Pad)) return new Pad(socket, name);
 
 	/**
 	 * ID
 	 * @type {string}
 	 */
-	this.id = GUID.create();
-
-	/**
-	 * ソケット
-	 * @type {Socket}
-	 */
-	this.io = io;
+	this.id = id || GUID.create();
 
 	/**
 	 * 位置x
