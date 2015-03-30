@@ -9,13 +9,13 @@ app.use(express.static(__dirname + '/public'));
 var game = new Game();
 
 io.on('connection', function(socket) {
-	socket.on('enterGame', function(data, response) {
-		var newUser = game.addUserBySocket(socket, data);
+	socket.on('enterGame', function(name, x, y, response) {
+		var newUser = game.addUserBySocket(socket, name, x, y);
 		response({
 			id: newUser.id,
 			name: newUser.name,
-			x: 0, // 適当な初期座標
-			y: 0
+			x: x,
+			y: y
 		});
 	});
 

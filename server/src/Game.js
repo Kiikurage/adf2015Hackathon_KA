@@ -74,8 +74,8 @@ Game.prototype.addUser = function(user) {
  *	@param {string} userName ユーザー名
  *	@retrun {User} 作成されたユーザー
  */
-Game.prototype.addUserBySocket = function(socket, userName) {
-	var newUser = new User(socket, userName, 0, 0);
+Game.prototype.addUserBySocket = function(socket, userName, x, y) {
+	var newUser = new User(socket, userName, x, y);
 	this.addUser(newUser);
 
 	return newUser;
