@@ -51,6 +51,7 @@ Application.prototype.initEventHandler_ = function() {
 	this.$entranceForm = document.querySelector('#entranceForm');
 	this.$userNameInput = document.querySelector('#userNameInput');
 	this.$entranceForm.addEventListener('submit', this.onEntranceFormSubmit = this.onEntranceFormSubmit.bind(this));
+	document.body.keydown.addEventListener('keydown', this.onEntranceFormSubmit = this.onEntranceFormSubmit.bind(this));
 };
 
 /**
