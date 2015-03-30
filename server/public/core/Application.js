@@ -51,7 +51,7 @@ Application.prototype.initEventHandler_ = function() {
 	this.$entranceForm = document.querySelector('#entranceForm');
 	this.$userNameInput = document.querySelector('#userNameInput');
 	this.$entranceForm.addEventListener('submit', this.onEntranceFormSubmit = this.onEntranceFormSubmit.bind(this));
-	document.body.keydown.addEventListener('keydown', this.onKeydown = this.onEntranceFormSubmit.bind(this));
+	document.body.keydown.addEventListener('keydown', this.onKeydown = this.onKeydown.bind(this));
 };
 
 /**
@@ -89,6 +89,10 @@ Application.prototype.onEntranceFormSubmit = function(ev) {
 
 	ev.preventDefault();
 	return false;
+};
+
+Application.prototype.onKeydown = function(ev) {
+
 };
 
 /**
