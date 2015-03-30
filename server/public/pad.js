@@ -12,11 +12,11 @@ function Pad(id, x, y, vx, vy) {
 Pad.records_ = {};
 Pad.RADIUS = 5;
 
-Pad.prototype.getById = function(padId) {
+Pad.getById = function(padId) {
 	return this.records_[padId] || null;
 };
 
-Pad.prototype.removeById = function(padId) {
+Pad.removeById = function(padId) {
 	var records = this.records_,
 		removedPad = records[padId];
 

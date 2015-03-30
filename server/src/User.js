@@ -21,17 +21,17 @@ function User(socket, name) {
 	 */
 	this.name = name;
 
-	/**
-	 * 位置x
-	 * @type {number}
-	 */
-	this.x = x;
-
-	/**
-	 * 位置y
-	 * @type {number}
-	 */
-	this.y = y;
+	// /**
+	//  * 位置x
+	//  * @type {number}
+	//  */
+	// this.x = x;
+	//
+	// /**
+	//  * 位置y
+	//  * @type {number}
+	//  */
+	// this.y = y;
 }
 
 User.RADIUS = 20;

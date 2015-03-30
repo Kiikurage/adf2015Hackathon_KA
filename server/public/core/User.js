@@ -23,6 +23,12 @@ function User(id, name) {
 User.records_ = {};
 
 /**
+ *	半径
+ *	@type {number}
+ */
+User.RADIUS = 20;
+
+/**
  *	IDを指定してモデルを取り出す
  *	@param {string} userId ID
  *	@return {User} ユーザーモデルまたはnull

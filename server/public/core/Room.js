@@ -5,6 +5,8 @@ function Room(socket) {
 	 */
 	this.socket = socket;
 
+	this.game = Game.getInstance();
+
 	this.initEventHandler_();
 	this.updateUserList();
 }

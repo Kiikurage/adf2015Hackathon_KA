@@ -20,7 +20,7 @@ function Application() {
 	 *	ゲーム入室フォーム
 	 *	@type {HTMLFormElement}
 	 */
-	this.userNameInput;
+	this.$userNameInput;
 
 	/**
 	 *	部屋のインスタンス
