@@ -36,8 +36,14 @@ io.on('connection', function(socket) {
 		if (user === null) {
 			return;
 		}
-		user.x = data.x;
-		user.y = data.y
+
+		var setInRange = function(x) {
+			if (x < 0) { return 0; }
+			if (x > 400) { return 400; }
+			return x;
+		};
+		user.x = setInRange(data.x);
+		user.y = setInRange(data.y);
 
 		var payload = {
 			x: data.x,
