@@ -11,9 +11,16 @@ var game = new Game();
 io.on('connection', function(socket) {
 	socket.on('enterGame', function(data, response) {
 		var newUser = game.addUserBySocket(socket, data);
-		var x = 0; // 初期の座標
-		var y = 0;
-		response(newUser.id, newUser.name, x, y);
+		response({
+			user: {
+				id: newUser.id,
+				name: newUser.name
+			},
+			position: {
+				x: 0, // 適当な初期座標
+				y: 0
+			}
+		});
 	});
 
 	socket.on('getUserList', 　function(response) {
