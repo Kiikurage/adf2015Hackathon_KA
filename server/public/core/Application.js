@@ -92,7 +92,29 @@ Application.prototype.onEntranceFormSubmit = function(ev) {
 };
 
 Application.prototype.onKeydown = function(ev) {
+	var KEYCODE_LEFT = 37,
+		KEYCODE_UP = 38,
+		KEYCODE_RIGHT = 39,
+		KEYCODE_DOWN = 40,
+		me = this.me;
 
+	switch (ev.keyCode) {
+		case KEYCODE_LEFT:
+			me.setPosition(me.x - 10, me.y);
+			break;
+
+		case KEYCODE_UP:
+			me.setPosition(me.x, me.y - 10);
+			break;
+
+		case KEYCODE_RIGHT:
+			me.setPosition(me.x + 10, me.y);
+			break;
+
+		case KEYCODE_DOWN:
+			me.setPosition(me.x, me.y + 10);
+			break;
+	}
 };
 
 /**

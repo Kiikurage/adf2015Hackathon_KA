@@ -1,38 +1,31 @@
 var User = require('./User.js'),
+	Field = require('./Field.js'),
 	Pad = require('./Pad.js');
 
 var abs = Math.abs,
 	sqrt = Math.sqrt,
 	pow = Math.power;
 
-function Game() {
-	if (!(this instanceof Game)) return new Game(socket);
+function Team() {
+	if (!(this instanceof Team)) return new Team(socket);
 
 	/**
-	 *	フィールド横幅
+	 *	チームカラー
 	 *	@type {number}
 	 */
-	this.width;
+	this.color;
 
 	/**
-	 *	フィールド縦の長さ
+	 *	チームカラー
 	 *	@type {number}
 	 */
-	this.height;
+	this.color;
 
 	/**
-	 *	ユーザーの一覧
-	 *	@type {Array<User>}
+	 *	得点
+	 *	@type {number}
 	 */
-	this.users = [];
-
-	/**
-	 *	パッドの一覧
-	 *	@type {Array<Pad>}
-	 */
-	this.pads = [];
-
-	setInterval(this.sendPadPosition = this.sendPadPosition.bind(this), 5000);
+	this.point = 0;
 }
 
 /**
@@ -119,6 +112,7 @@ Game.prototype.getUserList = function() {
 Game.prototype.updatePadsPosition = function() {
 	var pads = this.pads,
 		users = this.users,
+		field = this.field,
 		l, dAbs, ix, iy,
 		COLLISTION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2);
 
@@ -136,12 +130,12 @@ Game.prototype.updatePadsPosition = function() {
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
 		}
-		if (pad.x >= this.width - Pad.RADIUS) {
-			pad.x = this.width - Pad.RADIUS;
+		if (pad.x >= field.width - Pad.RADIUS) {
+			pad.x = field.width - Pad.RADIUS;
 			pad.vx *= -1;
 		}
-		if (pad.y >= this.height - Pad.RADIUS) {
-			pad.y = this.height - Pad.RADIUS;
+		if (pad.y >= field.height - Pad.RADIUS) {
+			pad.y = field.height - Pad.RADIUS;
 			pad.vy *= -1;
 		}
 
@@ -164,9 +158,9 @@ Game.prototype.updatePadsPosition = function() {
  */
 Game.prototype.emitAll = function(message, data) {
 	var args = arguments;
-	// this.users.forEach(function(user) {
-	// 	user.socket.emit.apply(user, args);
-	// });
+	this.users.forEach(function(user) {
+		user.emit.apply(user, args);
+	});
 };
 
 /**

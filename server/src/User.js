@@ -1,6 +1,6 @@
 var GUID = require('guid');
 
-function User(socket, name) {
+function User(socket, name, x, y, teamId) {
 	if (!(this instanceof User)) return new User(socket, name);
 
 	/**
@@ -21,31 +21,39 @@ function User(socket, name) {
 	 */
 	this.name = name;
 
-	// /**
-	//  * 位置x
-	//  * @type {number}
-	//  */
-	// this.x = x;
-	//
-	// /**
-	//  * 位置y
-	//  * @type {number}
-	//  */
-	// this.y = y;
+	/**
+	 * 位置x
+	 * @type {number}
+	 */
+	this.x = x;
+
+	/**
+	 * 位置y
+	 * @type {number}
+	 */
+	this.y = y;
+
+	/**
+	 * チームID
+	 * @type {string}
+	 */
+	this.teamId = teamId;
+
+	this.initEventHandler_();
 }
 
 User.RADIUS = 20;
 
-User.prototype.emit = function(message, data) {
-	return this.socket.emit(message, data);
+User.prototype.setPosition = function(x, y) {
+	this.x = x;
+	this.y = y;
 };
 
-User.prototype.on = function(message, callback) {
-	return this.socket.on(message, callback);
-};
-
-User.prototype.off = function(message, callback) {
-	return this.socket.removeListener(message, callback);
+User.prototype.initEventHandler_ = function() {
+	this.socket.on('move', function(x, y, res) {
+		this.x = x;
+		this.y = y;
+	});
 };
 
 
