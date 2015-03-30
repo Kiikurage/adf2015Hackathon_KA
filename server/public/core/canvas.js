@@ -11,6 +11,12 @@ Canvas.goalSize = 100;
 Canvas.barWidth = 30;
 Canvas.sideLength = Game.WIDTH / 2 - Canvas.barWidth;
 
+Canvas.colors = [
+	'#F00',
+	'#0F0',
+	'#00F',
+	'#FF0'
+]
 
 //フィールドを描画
 Canvas.drawField = function(users, pads) {
@@ -77,21 +83,21 @@ Canvas.drawField = function(users, pads) {
 		// ctx.strokeRect(50,50,50,50);
 	}
 	users.forEach(function(user) {
-		Canvas.drawUser(user.x, user.y, i < 5 ? "blue" : "red");
+		Canvas.drawUser(user);
 	});
 	pads.forEach(function(pad) {
-		Canvas.drawPad(pad.x, pad.y);
+		Canvas.drawPad(pad);
 	});
 	//window.requestAnimationFrame(Canvas.drawField(users, pads));
 };
 
 //x,y <- UserPosition
-Canvas.drawUser = function(x, y, color) {
+Canvas.drawUser = function(user) {
 	var canvas = document.getElementById('canvasField'),
 		userRadius = User.RADIUS;
 
-	x += Canvas.fieldOx;
-	y += Canvas.fieldOy;
+	x = user.x + Canvas.fieldOx;
+	y = user.y + Canvas.fieldOy;
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
@@ -99,19 +105,19 @@ Canvas.drawUser = function(x, y, color) {
 		ctx.beginPath();
 		ctx.arc(x, y, userRadius, 0, Math.PI * 2, true);
 		//arc(x, y, radius, startAngle, endAngle, anticlockwise)
-		ctx.fillStyle = color;
+		ctx.fillStyle = Canvas.colors[user.teamId];
 		ctx.fill();
 		ctx.stroke();
 
 	}
 };
 
-Canvas.drawPad = function(x, y) {
+Canvas.drawPad = function(pad) {
 	var padRadius = Pad.RADIUS;
 	var canvas = document.getElementById('canvasField');
 
-	x += Canvas.fieldOx;
-	y += Canvas.fieldOy;
+	x = pad.x + Canvas.fieldOx;
+	y = pad.y + Canvas.fieldOy;
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
@@ -119,7 +125,7 @@ Canvas.drawPad = function(x, y) {
 		ctx.beginPath();
 		ctx.arc(x, y, padRadius, 0, Math.PI * 2, true);
 		//arc(x, y, radius, startAngle, endAngle, anticlockwise)
-		ctx.fillStyle = "green";
+		ctx.fillStyle = '#000';
 		ctx.fill();
 		ctx.stroke();
 	}

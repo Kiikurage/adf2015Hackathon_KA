@@ -35,7 +35,7 @@ Room.prototype.updateUsers = function() {
 	this.socket.emit('getUsers', function(userDatas) {
 		console.log(userDatas);
 		self.users = userDatas.map(function(data) {
-			return new User(data.userId, data.name, data.x, data.y);
+			return new User(data.userId, data.name, data.x, data.y, data.teamId);
 		});
 	});
 
@@ -49,7 +49,7 @@ Room.prototype.updateUsers = function() {
  *	@param {number} y 位置
  */
 Room.prototype.onEnterUser = function(data) {
-	var newUser = new User(data.userId, data.name, data.x, data.y);
+	var newUser = new User(data.userId, data.name, data.x, data.y, data.teamId);
 	this.users.push(newUser);
 };
 

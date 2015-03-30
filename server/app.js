@@ -12,14 +12,10 @@ io.on('connection', function(socket) {
 	socket.on('enterGame', function(data, response) {
 		var newUser = game.addUserBySocket(socket, data);
 		response({
-			user: {
-				id: newUser.id,
-				name: newUser.name
-			},
-			position: {
-				x: 0, // 適当な初期座標
-				y: 0
-			}
+			id: newUser.id,
+			name: newUser.name,
+			x: 0, // 適当な初期座標
+			y: 0
 		});
 	});
 

@@ -3,7 +3,9 @@ var User = require('./User.js'),
 
 var abs = Math.abs,
 	sqrt = Math.sqrt,
-	pow = Math.power;
+	pow = Math.power,
+	teamMemberCounts = [0, 0, 0, 0],
+	teamScores = [0, 0, 0, 0];
 
 function Game() {
 	if (!(this instanceof Game)) return new Game(socket);
@@ -43,17 +45,26 @@ Game.prototype.addUser = function(user) {
 	this.removeUser(user);
 
 	this.users.push(user);
-	console.log('Game: add user');
-	console.log(user);
 
 	user.x = 0;
 	user.y = 0;
+
+	var i, minI, minTeamMemberCount = 99999;
+	for (i = 0; i < 4; i++) {
+		if (teamMemberCounts[i] < minTeamMemberCount) {
+			minTeamMemberCount = teamMemberCounts[i];
+			minI = i;
+		}
+	}
+	user.teamId = minI;
+	teamMemberCounts[minI]++;
 
 	user.socket.broadcast.emit('enterUser', {
 		userId: user.id,
 		name: user.name,
 		x: user.x,
-		y: user.y
+		y: user.y,
+		teamId: user.teamId
 	});
 };
 
@@ -77,9 +88,8 @@ Game.prototype.removeUser = function(user) {
 	var index = this.users.indexOf(user);
 	if (index === -1) return;
 
-	this.users.splice(index, 1);
-	console.log('Game: remove user');
-	console.log(user);
+	var removedUser = this.users.splice(index, 1)[0];
+	this.teamMemberCounts[removedUser.team]--;
 
 	user.socket.broadcast.emit('leaveUser', user.id, user.name);
 };
@@ -120,7 +130,8 @@ Game.prototype.getUsers = function() {
 			userId: user.id,
 			name: user.name,
 			x: user.x,
-			y: user.y
+			y: user.y,
+			teamId: user.teamId
 		};
 	});
 };
