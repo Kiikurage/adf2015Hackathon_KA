@@ -7,6 +7,9 @@ var abs = Math.abs,
 	teamMemberCounts = [0, 0, 0, 0],
 	teamScores = [0, 0, 0, 0];
 
+var config = require('../public/configs.js');
+config.sideLength = (Game.WIDTH - config.goalSize) / 2;
+
 function Game(io) {
 	if (!(this instanceof Game)) return new Game();
 
@@ -32,7 +35,12 @@ function Game(io) {
 	 *	パッドの一覧
 	 *	@type {Array<Pad>}
 	 */
-	this.pads = [];
+	this.pads = [
+		new Pad(0, 0, 0, 40, 24),
+		new Pad(1, 0, 50, 53, 10),
+		new Pad(2, 50, 0, 23, 27),
+		new Pad(3, 50, 50, -25, 28)
+	];
 
 	this.io = io;
 }
@@ -156,7 +164,7 @@ Game.prototype.updatePadPositions = function() {
 			// 左の壁にあたった
 			pad.x = Pad.RADIUS;
 			pad.vx *= -1;
-			if (Canvas.sideLength <= pad.y && pad.y <= Canvas.sideLength + Canvas.goalSize) {
+			if (config.sideLength <= pad.y && pad.y <= config.sideLength + config.goalSize) {
 				teamScores[0]++;
 				teamScores[1]++;
 				teamScores[2]++;
@@ -166,7 +174,7 @@ Game.prototype.updatePadPositions = function() {
 			// 上の壁にあたった
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
-			if (Canvas.sideLength <= pad.x && pad.x <= Canvas.sideLength + Canvas.goalSize) {
+			if (config.sideLength <= pad.x && pad.x <= config.sideLength + config.goalSize) {
 				teamScores[1]++;
 				teamScores[2]++;
 				teamScores[3]++;
@@ -176,7 +184,7 @@ Game.prototype.updatePadPositions = function() {
 			// 右の壁にあたった
 			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
-			if (Canvas.sideLength <= pad.y && pad.y <= Canvas.sideLength + Canvas.goalSize) {
+			if (config.sideLength <= pad.y && pad.y <= config.sideLength + config.goalSize) {
 				teamScores[0]++;
 				teamScores[2]++;
 				teamScores[3]++;
@@ -186,7 +194,7 @@ Game.prototype.updatePadPositions = function() {
 			// 左の壁にあたった
 			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
-			if (Canvas.sideLength <= pad.x && pad.x <= Canvas.sideLength + Canvas.goalSize) {
+			if (config.sideLength <= pad.x && pad.x <= config.sideLength + config.goalSize) {
 				teamScores[0]++;
 				teamScores[1]++;
 				teamScores[3]++;
