@@ -33,7 +33,7 @@ Game.getInstance = function() {
 
 Game.prototype.update = function() {
 	Game.updatePadPositions();
-	Canvas.draw();
+	Canvas.drawField();
 };
 
 Game.prototype.updatePadPositions = function() {
