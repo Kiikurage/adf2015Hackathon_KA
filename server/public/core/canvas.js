@@ -9,6 +9,11 @@ Canvas.fieldOy = 25;
 Canvas.fieldWidth = 1000;
 Canvas.fieldHeight = 1000;
 
+Canvas.goalSize = 100;
+Canvas.barWidth = 30;
+Canvas.sideLength = Canvas.fieldWidth/2 - Canvas.barWidth;
+
+
 //フィールドを描画
 Canvas.drawField = function(users, pads) {
 	//if (!(this instanceof drawField)) return new drawField(socket);
@@ -18,16 +23,30 @@ Canvas.drawField = function(users, pads) {
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
+		ctx.clearRect(0, 0, Canvas.fieldWidth, Canvas.fieldHeight);
 
+		//Draw Field
 		//strokeRect(x, y, width, height)
-		ctx.fillStyle = "yellow";
-		ctx.strokeRect(Canvas.fieldOx, Canvas.fieldOy, Canvas.fieldWidth, Canvas.fieldHeight);
+		ctx.fillStyle = "black";
+		ctx.fillRect(Canvas.fieldOx, Canvas.fieldOy, Canvas.fieldWidth, Canvas.fieldHeight);
+		ctx.clearRect(Canvas.fieldOx + Canvas.barWidth , Canvas.fieldOy + Canvas.barWidth, Canvas.fieldWidth - 2*Canvas.barWidth, Canvas.fieldHeight - 2*Canvas.barWidth);
+
+		//DrawGoals
+		//上下
+		ctx.clearRect(Canvas.fieldOx + Canvas.barWidth + Canvas.sideLength, Canvas.fieldOy, Canvas.goalSize, Canvas.barWidth);
+		ctx.clearRect(Canvas.fieldOx + Canvas.barWidth + Canvas.sideLength, Canvas.fieldOy + Canvas.fieldHeight - Canvas.barWidth, Canvas.goalSize, Canvas.barWidth);
+		//左右
+		ctx.clearRect(Canvas.fieldOx, Canvas.fieldOy + Canvas.barWidth + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
+		ctx.clearRect(Canvas.fieldOx + Canvas.fieldWidth - Canvas.barWidth, Canvas.fieldOy + Canvas.barWidth + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
+
+		//Draw Cross
 		ctx.beginPath();
 		ctx.moveTo(Canvas.fieldOx, Canvas.fieldOy);
 		ctx.lineTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.fieldHeight);
 		ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy);
 		ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.fieldWidth);
 		ctx.stroke();
+
 		//clearRect(x, y, width, height)
 		//ctx.clearRect(45,45,fieldWidth-100,fieldHeight-100);
 
@@ -41,6 +60,7 @@ Canvas.drawField = function(users, pads) {
 	pads.forEach(function(pad) {
 		Canvas.drawPad(pad.x, pad.y);
 	});
+	//window.requestAnimationFrame(Canvas.drawField(users, pads));
 };
 
 //x,y <- UserPosition
