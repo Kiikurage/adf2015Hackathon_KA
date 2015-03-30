@@ -15,8 +15,6 @@ function Game() {
 		new Pad(3, 50, 50, -25, 28)
 	];
 	for (i = 0; i < 100; i++) this.pads.push(new Pad(i, Math.random() * 500, Math.random() * 500, Math.random() * 100 - 50, Math.random() * 100 - 50));
-	this.width = 500;
-	this.height = 500;
 	this.me;
 
 	this.flagLeftKey = false;
@@ -28,6 +26,9 @@ function Game() {
 		this.update();
 	}.bind(this), 16);
 };
+
+Game.WIDTH = 1000;
+Game.HEIGHT = 1000;
 
 Game.instance_;
 
@@ -113,8 +114,8 @@ Game.prototype.updatePadPositions = function() {
 	var pads = this.pads,
 		users = app.room.users,
 		l, dAbs, dAbs1, dAbs2, ix, iy,
-		width = this.width,
-		height = this.height,
+		width = Game.WIDTH,
+		height = Game.HEIGHT,
 		COLLISION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2),
 		PAD_COLLISION_LENGTH2 = pow(Pad.RADIUS + Pad.RADIUS, 2),
 		i, j, max, pad1, pad2;
@@ -123,11 +124,6 @@ Game.prototype.updatePadPositions = function() {
 		//padの位置の更新
 		pad.x += pad.vx * 0.1;
 		pad.y += pad.vy * 0.1;
-
-		pads.forEach(function(pad) {
-		//padの位置の更新
-		pad.x += pad.vx;
-		pad.y += pad.vy;
 
 		//反射計算
 		if (pad.x <= Pad.RADIUS) {
@@ -147,17 +143,17 @@ Game.prototype.updatePadPositions = function() {
 				console.log("Goal:Team1");
 			}
 		}
-		if (pad.x >= this.width - Pad.RADIUS) {
+		if (pad.x >= width - Pad.RADIUS) {
 			// 右の壁にあたった
-			pad.x = this.width - Pad.RADIUS;
+			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
 			if (Canvas.fieldOy + Canvas.slideLength <= pad.y && pad.y <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
 				console.log("Goal:Team2");
 			}
 		}
-		if (pad.y >= this.height - Pad.RADIUS) {
+		if (pad.y >= height - Pad.RADIUS) {
 			// 左の壁にあたった
-			pad.y = this.height - Pad.RADIUS;
+			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
 			if (Canvas.fieldOx + Canvas.slideLength <= pad.x && pad.x <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
 				console.log("Goal:Team3");

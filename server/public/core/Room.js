@@ -13,7 +13,7 @@ function Room(socket, me) {
 	this.users = [];
 
 	this.initEventHandler_();
-	this.updateUserList();
+	this.updateUsers();
 }
 
 /**
@@ -29,20 +29,14 @@ Room.prototype.initEventHandler_ = function() {
 /**
  *　ユーザー一覧を更新する
  */
-Room.prototype.updateUserList = function() {
+Room.prototype.updateUsers = function() {
 	var self = this;
 
-	this.socket.emit('getUserList', function(userList) {
-		var users = [];
-
-		Object.keys(userList).forEach(function(userId) {
-			var userName = userList[userId],
-				user = new User(userId, userName);
-
-			users.push(user);
+	this.socket.emit('getUsers', function(userDatas) {
+		console.log(userDatas);
+		self.users = userDatas.map(function(data) {
+			return new User(data.userId, data.name, data.x, data.y);
 		});
-
-		self.users = users;
 	});
 
 };
@@ -55,7 +49,7 @@ Room.prototype.updateUserList = function() {
  *	@param {number} y 位置
  */
 Room.prototype.onEnterUser = function(data) {
-	var newUser = new User(data.user.id, data.user.name, data.pos.x, data.pos.y);
+	var newUser = new User(data.userId, data.name, data.x, data.y);
 	this.users.push(newUser);
 };
 

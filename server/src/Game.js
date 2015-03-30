@@ -46,20 +46,15 @@ Game.prototype.addUser = function(user) {
 	console.log('Game: add user');
 	console.log(user);
 
-	var x = 0; // 適当な初期座標
-	var y = 0;
+	user.x = 0;
+	user.y = 0;
 
-	var payload = {
-		user: {
-			id: user.id,
-			name: user.name
-		},
-		pos: {
-			x: x,
-			y: y
-		}
-	};
-	user.socket.broadcast.emit('enterUser', payload);
+	user.socket.broadcast.emit('enterUser', {
+		userId: user.id,
+		name: user.name,
+		x: user.x
+		y: user.y
+	});
 };
 
 /**
@@ -69,7 +64,7 @@ Game.prototype.addUser = function(user) {
  *	@retrun {User} 作成されたユーザー
  */
 Game.prototype.addUserBySocket = function(socket, userName) {
-	var newUser = new User(socket, userName);
+	var newUser = new User(socket, userName, 0, 0);
 	this.addUser(newUser);
 
 	return newUser;
@@ -117,13 +112,17 @@ Game.prototype.getUserBySocket = function(socket) {
 };
 
 /**
- *	ユーザーの辞書を取得する
+ *	ユーザーの一覧を取得する
  */
-Game.prototype.getUserList = function() {
-	return this.users.reduce(function(userList, user) {
-		userList[user.id] = user.name
-		return userList;
-	}, {});
+Game.prototype.getUsers = function() {
+	return this.users.map(function(user) {
+		return {
+			userId: user.id,
+			name: user.name,
+			x: user.x,
+			y: user.y
+		};
+	});
 };
 
 /**

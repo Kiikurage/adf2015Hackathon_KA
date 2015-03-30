@@ -23,8 +23,8 @@ io.on('connection', function(socket) {
 		});
 	});
 
-	socket.on('getUserList', 　function(response) {
-		response(game.getUserList());
+	socket.on('getUsers', 　function(response) {
+		response(game.getUsers());
 	});
 
 	socket.on('leaveGame', 　function() {
@@ -40,6 +40,8 @@ io.on('connection', function(socket) {
 		if (user === null) {
 			return;
 		}
+		user.x = data.x;
+		user.y = data.y
 
 		var payload = {
 			x: data.x,
