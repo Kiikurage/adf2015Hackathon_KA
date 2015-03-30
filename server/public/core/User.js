@@ -6,7 +6,7 @@ function User(id, name, x, y, teamId) {
 	 * ID
 	 * @type {string}
 	 */
-	this.id = id
+	this.id = id;
 
 	/**
 	 * ユーザー名
@@ -53,4 +53,10 @@ User.removeById = function(userId) {
 	records[userId] = null;
 
 	return removedUser;
+};
+
+User.prototype.setPosition = function(x, y) {
+	this.x = x;
+	this.y = y;
+	return [x, y];
 };

@@ -32,7 +32,7 @@ function Application() {
 	 *	自分自身のモデル
 	 *	@type {User}
 	 */
-	this.me;
+	this.me = new User(0, 'username', 0, 0, 1);
 
 	this.initEventHandler_();
 }
@@ -98,7 +98,7 @@ Application.prototype.onKeydown = function(ev) {
 		KEYCODE_DOWN = 40,
 		me = this.me;
 
-	switch (ev.keyCode) {
+	switch (ev.which || ev.keyCode) {
 		case KEYCODE_LEFT:
 			me.setPosition(me.x - 10, me.y);
 			break;
@@ -115,6 +115,12 @@ Application.prototype.onKeydown = function(ev) {
 			me.setPosition(me.x, me.y + 10);
 			break;
 	}
+
+	var payload = {
+		x: me.x,
+		y: me.y
+	};
+	this.socket.emit('padMoved', payload);
 };
 
 /**
