@@ -34,6 +34,8 @@ function User(socket, name) {
 	this.y = y;
 }
 
+User.RADIUS = 20;
+
 User.prototype.emit = function(message, data) {
 	return this.socket.emit(message, data);
 };

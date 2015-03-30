@@ -65,7 +65,7 @@ Application.getInstance = function() {
 
 /**
  *	ゲームに参加する
- *	ゲームへの参加は非同期なので中尉
+ *	ゲームへの参加は非同期なので注意
  *	@param {string} userName ユーザー名
  */
 Application.prototype.enterGame = function(userName) {
