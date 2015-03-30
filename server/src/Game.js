@@ -3,10 +3,15 @@ var User = require('./User.js'),
 
 var abs = Math.abs,
 	sqrt = Math.sqrt,
-	pow = Math.power;
+	pow = Math.pow,
+	teamMemberCounts = [0, 0, 0, 0],
+	teamScores = [0, 0, 0, 0];
 
-function Game() {
-	if (!(this instanceof Game)) return new Game(socket);
+var config = require('../public/configs.js');
+config.sideLength = (Game.WIDTH - config.goalSize) / 2;
+
+function Game(io) {
+	if (!(this instanceof Game)) return new Game();
 
 	/**
 	 *	フィールド横幅
@@ -30,9 +35,14 @@ function Game() {
 	 *	パッドの一覧
 	 *	@type {Array<Pad>}
 	 */
-	this.pads = [];
+	this.pads = [
+		new Pad(1, 0, 0, 40, 24),
+		new Pad(2, 0, 50, 53, 10),
+		new Pad(3, 50, 0, 23, 27),
+		new Pad(4, 50, 50, -25, 28)
+	];
 
-	setInterval(this.sendPadPosition = this.sendPadPosition.bind(this), 5000);
+	this.io = io;
 }
 
 /**
@@ -43,17 +53,23 @@ Game.prototype.addUser = function(user) {
 	this.removeUser(user);
 
 	this.users.push(user);
-	console.log('Game: add user');
-	console.log(user);
 
-	user.x = 0;
-	user.y = 0;
+	var i, minI, minTeamMemberCount = 99999;
+	for (i = 0; i < 4; i++) {
+		if (teamMemberCounts[i] < minTeamMemberCount) {
+			minTeamMemberCount = teamMemberCounts[i];
+			minI = i;
+		}
+	}
+	user.teamId = minI;
+	teamMemberCounts[minI]++;
 
 	user.socket.broadcast.emit('enterUser', {
 		userId: user.id,
 		name: user.name,
 		x: user.x,
-		y: user.y
+		y: user.y,
+		teamId: user.teamId
 	});
 };
 
@@ -63,8 +79,8 @@ Game.prototype.addUser = function(user) {
  *	@param {string} userName ユーザー名
  *	@retrun {User} 作成されたユーザー
  */
-Game.prototype.addUserBySocket = function(socket, userName) {
-	var newUser = new User(socket, userName, 0, 0);
+Game.prototype.addUserBySocket = function(socket, userName, x, y) {
+	var newUser = new User(socket, userName, x, y);
 	this.addUser(newUser);
 
 	return newUser;
@@ -77,9 +93,8 @@ Game.prototype.removeUser = function(user) {
 	var index = this.users.indexOf(user);
 	if (index === -1) return;
 
-	this.users.splice(index, 1);
-	console.log('Game: remove user');
-	console.log(user);
+	var removedUser = this.users.splice(index, 1)[0];
+	teamMemberCounts[removedUser.teamId]--;
 
 	user.socket.broadcast.emit('leaveUser', user.id, user.name);
 };
@@ -120,7 +135,8 @@ Game.prototype.getUsers = function() {
 			userId: user.id,
 			name: user.name,
 			x: user.x,
-			y: user.y
+			y: user.y,
+			teamId: user.teamId
 		};
 	});
 };
@@ -128,57 +144,103 @@ Game.prototype.getUsers = function() {
 /**
  *	パッドの位置計算
  */
-Game.prototype.updatePadsPosition = function() {
+Game.prototype.updatePadPositions = function() {
 	var pads = this.pads,
 		users = this.users,
-		l, dAbs, ix, iy,
-		COLLISTION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2);
+		l, dAbs, dAbs1, dAbs2, ix, iy,
+		width = 600,
+		height = 600,
+		COLLISION_LENGTH2 = Math.pow(Pad.RADIUS + User.RADIUS, 2),
+		PAD_COLLISION_LENGTH2 = Math.pow(Pad.RADIUS + Pad.RADIUS, 2),
+		i, j, max, pad1, pad2;
 
 	pads.forEach(function(pad) {
 		//padの位置の更新
-		pad.x += pad.vx;
-		pad.y += pad.vy;
+		pad.x += pad.vx * 0.1;
+		pad.y += pad.vy * 0.1;
 
 		//反射計算
 		if (pad.x <= Pad.RADIUS) {
+			// 左の壁にあたった
 			pad.x = Pad.RADIUS;
 			pad.vx *= -1;
+      if (pad.y > 250 && pad.y < 350) {
+				teamScores[0]++;
+				teamScores[1]++;
+				teamScores[2]++;
+			}
 		}
 		if (pad.y <= Pad.RADIUS) {
+			// 上の壁にあたった
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
+			if (pad.x > 250 && pad.x < 350) {
+				teamScores[1]++;
+				teamScores[2]++;
+				teamScores[3]++;
+			}
 		}
-		if (pad.x >= this.width - Pad.RADIUS) {
-			pad.x = this.width - Pad.RADIUS;
+		if (pad.x >= width - Pad.RADIUS) {
+			// 右の壁にあたった
+			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
+      if (pad.y > 250 && pad.y < 350) {
+				teamScores[0]++;
+				teamScores[2]++;
+				teamScores[3]++;
+			}
 		}
-		if (pad.y >= this.height - Pad.RADIUS) {
-			pad.y = this.height - Pad.RADIUS;
+		if (pad.y >= height - Pad.RADIUS) {
+			// 下の壁にあたった
+			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
+			if (pad.x > 250 && pad.x < 350) {
+				teamScores[0]++;
+				teamScores[1]++;
+				teamScores[3]++;
+			}
 		}
 
 		//ユーザーとの反射計算(あってるか謎)
-		if (pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2) <= COLLISTION_LENGTH2) {
-			l = sqrt(pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2));
-			ix = (pad.x - user.x) / l;
-			iy = (pad.y - user.y) / l;
-			dAbs = ((pad.x - user.x) * user.vx + (pad.y - user.y) * user.vy) / l * 2;
-			pad.vx += ix * dAbas;
-			pad.vy += iy * dAbas;
-		}
+		users.forEach(function(user) {
+			if (Math.pow(pad.x - user.x, 2) + Math.pow(pad.y - user.y, 2) <= COLLISION_LENGTH2) {
+				l = Math.sqrt(Math.pow(pad.x - user.x, 2) + Math.pow(pad.y - user.y, 2));
+				ix = (pad.x - user.x) / l;
+				iy = (pad.y - user.y) / l;
+				dAbs = ((pad.x - user.x) * pad.vx + (pad.y - user.y) * pad.vy) / l * 2;
+				pad.vx -= ix * dAbs;
+				pad.vy -= iy * dAbs;
+				pad.x = user.x + ix * Math.sqrt(COLLISION_LENGTH2) * 1.1;
+				pad.y = user.y + iy * Math.sqrt(COLLISION_LENGTH2) * 1.1;
+			}
+		});
 	});
-};
 
-/**
- *	全ユーザーに配信する
- *	@param {string} message メッセージ
- *	@param {*} data データ
- */
-Game.prototype.emitAll = function(message, data) {
-	var args = arguments;
-	// this.users.forEach(function(user) {
-	// 	user.socket.emit.apply(user, args);
-	// });
+	//パッド同士の衝突
+	for (i = 0, max = pads.length; i < max; i++) {
+		for (j = i + 1; j < max; j++) {
+			if (i == j) continue;
+			pad1 = pads[i];
+			pad2 = pads[j];
+
+			if (Math.pow(pad1.x - pad2.x, 2) + Math.pow(pad1.y - pad2.y, 2) <= PAD_COLLISION_LENGTH2) {
+				l = Math.sqrt(Math.pow(pad1.x - pad2.x, 2) + Math.pow(pad1.y - pad2.y, 2));
+				ix = (pad1.x - pad2.x) / l;
+				iy = (pad1.y - pad2.y) / l;
+				dAbs1 = ((pad1.x - pad2.x) * pad1.vx + (pad1.y - pad2.y) * pad1.vy) / l * 2;
+				dAbs2 = ((pad2.x - pad1.x) * pad2.vx + (pad2.y - pad1.y) * pad2.vy) / l * 2;
+				pad1.vx -= ix * dAbs1;
+				pad1.vy -= iy * dAbs1;
+				pad2.vx += ix * dAbs2;
+				pad2.vy += iy * dAbs2;
+				pad1.x = pad2.x + ix * Math.sqrt(PAD_COLLISION_LENGTH2) * 1.1;
+				pad1.y = pad2.y + iy * Math.sqrt(PAD_COLLISION_LENGTH2) * 1.1;
+			}
+		}
+	}
+
+	this.io.emit('scoreUpdated', teamScores);
+	this.sendPadPosition();
 };
 
 /**
@@ -190,18 +252,9 @@ Game.prototype.sendPadPosition = function() {
 		positionMap[pad.id] = {
 			x: pad.x,
 			y: pad.y
-		}
+		};
 	});
-	this.emitAll('padsPosition', positionMap);
+	this.io.emit('padsPosition', positionMap);
 };
-
-/**
- *	更新処理
- */
-Game.prototype.update = function() {
-	this.updatePadsPosition();
-};
-
-
 
 module.exports = Game;

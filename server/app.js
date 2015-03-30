@@ -6,20 +6,19 @@ var express = require('express'),
 
 app.use(express.static(__dirname + '/public'));
 
-var game = new Game();
+var game = new Game(io);
+setInterval(function() {
+	game.updatePadPositions();
+}, 16);
 
 io.on('connection', function(socket) {
-	socket.on('enterGame', function(data, response) {
-		var newUser = game.addUserBySocket(socket, data);
+	socket.on('enterGame', function(name, x, y, response) {
+		var newUser = game.addUserBySocket(socket, name, x, y);
 		response({
-			user: {
-				id: newUser.id,
-				name: newUser.name
-			},
-			position: {
-				x: 0, // 適当な初期座標
-				y: 0
-			}
+			id: newUser.id,
+			name: newUser.name,
+			x: x,
+			y: y
 		});
 	});
 
@@ -40,8 +39,14 @@ io.on('connection', function(socket) {
 		if (user === null) {
 			return;
 		}
-		user.x = data.x;
-		user.y = data.y
+
+		var setInRange = function(x) {
+			if (x < 20) { return 20; }
+			if (x > 380) { return 380; }
+			return x;
+		};
+		user.x = setInRange(data.x);
+		user.y = setInRange(data.y);
 
 		var payload = {
 			x: data.x,

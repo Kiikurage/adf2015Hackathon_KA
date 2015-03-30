@@ -24,6 +24,7 @@ Room.prototype.initEventHandler_ = function() {
 	this.socket.on('enterUser', this.onEnterUser = this.onEnterUser.bind(this));
 	this.socket.on('leaveUser', this.onLeaveUser = this.onLeaveUser.bind(this));
 	this.socket.on('userMoved', this.onUserMoved = this.onUserMoved.bind(this));
+	this.socket.on('scoreUpdated', this.onScoreUpdated = this.onScoreUpdated.bind(this));
 };
 
 /**
@@ -35,7 +36,7 @@ Room.prototype.updateUsers = function() {
 	this.socket.emit('getUsers', function(userDatas) {
 		console.log(userDatas);
 		self.users = userDatas.map(function(data) {
-			return new User(data.userId, data.name, data.x, data.y);
+			return new User(data.userId, data.name, data.x, data.y, data.teamId);
 		});
 	});
 
@@ -49,7 +50,7 @@ Room.prototype.updateUsers = function() {
  *	@param {number} y 位置
  */
 Room.prototype.onEnterUser = function(data) {
-	var newUser = new User(data.userId, data.name, data.x, data.y);
+	var newUser = new User(data.userId, data.name, data.x, data.y, data.teamId);
 	this.users.push(newUser);
 };
 
@@ -79,4 +80,11 @@ Room.prototype.onUserMoved = function(data) {
 
 	movedUser.x = data.x;
 	movedUser.y = data.y;
+};
+
+Room.prototype.onScoreUpdated = function(scores) {
+	document.querySelector('#score1').textContent = scores[0];
+	document.querySelector('#score2').textContent = scores[1];
+	document.querySelector('#score3').textContent = scores[2];
+	document.querySelector('#score4').textContent = scores[3];
 };

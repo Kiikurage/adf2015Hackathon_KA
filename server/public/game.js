@@ -9,12 +9,16 @@ var abs = Math.abs,
 
 function Game() {
 	this.pads = [
-		new Pad(0, 0, 0, 40, 24),
-		new Pad(1, 0, 50, 53, 10),
-		new Pad(2, 50, 0, 23, 27),
-		new Pad(3, 50, 50, -25, 28)
+		new Pad(1, 0, 0, 40, 24),
+		new Pad(2, 0, 50, 53, 10),
+		new Pad(3, 50, 0, 23, 27),
+		new Pad(4, 50, 50, -25, 28)
 	];
-	for (i = 0; i < 100; i++) this.pads.push(new Pad(i, Math.random() * 500, Math.random() * 500, Math.random() * 100 - 50, Math.random() * 100 - 50));
+	for (i = 0; i < 10; i++) {
+		p = Math.random() * 2 * Math.PI;
+		this.pads.push(new Pad(i, Math.random() * Game.WIDTH, Math.random() * Game.HEIGHT, Math.cos(p) * 100, Math.sin(p) * 100));
+	}
+
 	this.me;
 
 	this.flagLeftKey = false;
@@ -25,10 +29,23 @@ function Game() {
 	setInterval(function() {
 		this.update();
 	}.bind(this), 16);
+
+	var pads = this.pads;
+	app.socket.on('padsPosition', function(datas) {
+		// console.log(datas);
+		Object.keys(datas).forEach(function(padId) {
+			var data = datas[padId],
+				pad = Pad.getById(padId);
+			pad.x = data.x;
+			pad.y = data.y;
+			pad.vx = data.vx;
+			pad.vy = data.vy;
+		});
+	});
 };
 
-Game.WIDTH = 1000;
-Game.HEIGHT = 1000;
+Game.WIDTH = 600;
+Game.HEIGHT = 600;
 
 Game.instance_;
 
@@ -101,6 +118,19 @@ Game.prototype.updateUserPositions = function() {
 	if (this.flagRightKey) me.x += User.SPEED * 0.1;
 	if (this.flagDownKey) me.y += User.SPEED * 0.1;
 
+	var setInRange = function(x) {
+		if (x < 20) {
+			return 20;
+		}
+		if (x > 580) {
+			return 580;
+		}
+		return x;
+	};
+
+	me.x = setInRange(me.x);
+	me.y = setInRange(me.y);
+
 	if (this.flagLeftKey || this.flagUpKey || this.flagRightKey || this.flagDownKey) {
 		var payload = {
 			x: me.x,
@@ -127,37 +157,20 @@ Game.prototype.updatePadPositions = function() {
 
 		//反射計算
 		if (pad.x <= Pad.RADIUS) {
-			// 左の壁にあたった
 			pad.x = Pad.RADIUS;
 			pad.vx *= -1;
-			if (Canvas.fieldOy + Canvas.slideLength <= pad.y && pad.y <= Canvas.fieldOy + Canvas.slideLength + Canvas.goalSize) {
-				// ゴールに入った
-				console.log("Goal:Team4");
-			}
 		}
 		if (pad.y <= Pad.RADIUS) {
-			// 上の壁にあたった
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
-			if (Canvas.fieldOx + Canvas.slideLength <= pad.x && pad.x <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
-				console.log("Goal:Team1");
-			}
 		}
 		if (pad.x >= width - Pad.RADIUS) {
-			// 右の壁にあたった
 			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
-			if (Canvas.fieldOy + Canvas.slideLength <= pad.y && pad.y <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
-				console.log("Goal:Team2");
-			}
 		}
 		if (pad.y >= height - Pad.RADIUS) {
-			// 左の壁にあたった
 			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
-			if (Canvas.fieldOx + Canvas.slideLength <= pad.x && pad.x <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
-				console.log("Goal:Team3");
-			}
 		}
 
 		//ユーザーとの反射計算(あってるか謎)
