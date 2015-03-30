@@ -27,7 +27,13 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('userMoved', function(data) {
-		console.log(data);
+		var user = game.getUserBySocket(socket);
+		var payload = {
+			x: data.x,
+			y: data.y,
+			user: 'id' // TODO bind something that can identify the user
+		};
+		io.emit('userMoved', payload);
 	});
 });
 

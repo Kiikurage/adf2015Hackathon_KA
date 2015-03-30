@@ -18,6 +18,7 @@ function Room(socket) {
 Room.prototype.initEventHandler_ = function() {
 	this.socket.on('enterUser', this.onEnterUser = this.onEnterUser.bind(this));
 	this.socket.on('leaveUser', this.onLeaveUser = this.onLeaveUser.bind(this));
+	this.socket.on('userMoved', this.onUserMoved = this.onUserMoved.bind(this));
 };
 
 /**
@@ -56,4 +57,12 @@ Room.prototype.onLeaveUser = function(userId, userName) {
 	if (!leftUser) return
 
 	console.log('onLeaveUser >> %s: %s', userId, userName);
+};
+
+/**
+ *	サーバーからの userMoved メッセージに対するハンドラ
+ *
+ */
+Room.prototype.onUserMoved = function(data) {
+	console.log(data);
 };

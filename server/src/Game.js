@@ -97,7 +97,7 @@ Game.prototype.getUserBySocket = function(socket) {
 		i, max;
 
 	for (i = 0, max = users.length; i < max; i++) {
-		if (users[i].socket === socket) return users[i];
+		if (users[i].socket.id === socket.id) return users[i];
 	}
 
 	return null;
