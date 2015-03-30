@@ -25,6 +25,10 @@ io.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		game.removeUserBySocket(socket);
 	});
+
+	socket.on('userMoved', function(data) {
+		console.log(data);
+	});
 });
 
 

@@ -120,7 +120,7 @@ Application.prototype.onKeydown = function(ev) {
 		x: me.x,
 		y: me.y
 	};
-	this.socket.emit('padMoved', payload);
+	this.socket.emit('userMoved', payload);
 };
 
 /**
