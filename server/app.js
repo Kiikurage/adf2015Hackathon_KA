@@ -28,10 +28,14 @@ io.on('connection', function(socket) {
 
 	socket.on('userMoved', function(data) {
 		var user = game.getUserBySocket(socket);
+		if (user === null) {
+			return;
+		}
+
 		var payload = {
 			x: data.x,
 			y: data.y,
-			user: 'id' // TODO bind something that can identify the user
+			userId: user.id.value
 		};
 		io.emit('userMoved', payload);
 	});
