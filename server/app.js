@@ -6,7 +6,10 @@ var express = require('express'),
 
 app.use(express.static(__dirname + '/public'));
 
-var game = new Game();
+var game = new Game(io);
+setInterval(function() {
+	game.updatePadPositions()
+}, 16);
 
 io.on('connection', function(socket) {
 	socket.on('enterGame', function(name, x, y, response) {
@@ -36,8 +39,14 @@ io.on('connection', function(socket) {
 		if (user === null) {
 			return;
 		}
-		user.x = data.x;
-		user.y = data.y
+
+		var setInRange = function(x) {
+			if (x < 20) { return 20; }
+			if (x > 380) { return 380; }
+			return x;
+		};
+		user.x = setInRange(data.x);
+		user.y = setInRange(data.y);
 
 		var payload = {
 			x: data.x,

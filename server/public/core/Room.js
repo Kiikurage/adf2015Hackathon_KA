@@ -24,6 +24,7 @@ Room.prototype.initEventHandler_ = function() {
 	this.socket.on('enterUser', this.onEnterUser = this.onEnterUser.bind(this));
 	this.socket.on('leaveUser', this.onLeaveUser = this.onLeaveUser.bind(this));
 	this.socket.on('userMoved', this.onUserMoved = this.onUserMoved.bind(this));
+	this.socket.on('scoreUpdated', this.onScoreUpdated = this.onScoreUpdated.bind(this));
 };
 
 /**
@@ -79,4 +80,8 @@ Room.prototype.onUserMoved = function(data) {
 
 	movedUser.x = data.x;
 	movedUser.y = data.y;
+};
+
+Room.prototype.onScoreUpdated = function(scores) {
+  console.log(scores);
 };
