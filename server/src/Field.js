@@ -12,4 +12,4 @@ function Field() {
 	this.height;
 }
 
-Field
+module.exports = Field;

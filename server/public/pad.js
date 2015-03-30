@@ -1,5 +1,4 @@
-function Pad(id, x, y, dx, dy)
-{
+function Pad(id, x, y, dx, dy) {
 	if (Pad.getById(id)) return Pad.getById(id);
 	Pad.records_[id] = this;
 

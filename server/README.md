@@ -39,7 +39,7 @@ socket.emit('move', 5, 8, function(responseData){
 |userName|string|ユーザー名|
 
 ```javascript
-socket.ib('enterUser', 'kikurage', function(userId, userName){
+socket.on('enterUser', function(userId, userName){
 	console.log('New user coming! ID: %s, NAME: %s', userId, userName);
 });
 ```
@@ -56,24 +56,28 @@ socket.ib('enterUser', 'kikurage', function(userId, userName){
 |userName|string|ユーザー名|
 
 ```javascript
-socket.ib('enterUser', 'kikurage', function(userId, userName){
+socket.on('enterUser', function(userId, userName){
 	console.log('User left! ID: %s, NAME: %s', userId, userName);
 });
 ```
 
+#### padsPosition
+
+パッドの位置の一覧を
 ##### コールバックの引数
 
 |名前|型|意味|
 |---|---|---|
-|userId|string|ユーザーID|
-|userName|string|ユーザー名|
+|positionMap|Object|パッドの位置の辞書型配列|
 
 ```javascript
-socket.ib('enterUser', 'kikurage', function(userId, userName){
-	console.log('New user coming! ID: %s, NAME: %s', userId, userName);
+socket.on('padsPosition', function(positionMap){
+	Object.keys(positionMap).forEach(function(padId){
+		var position = positionMap[padId];
+		console.log('Pad ID: %s (%d, %d)', padId, position.x, position.y);
+	});
 });
 ```
-
 ---
 
 ### サーバーへのメッセージ
