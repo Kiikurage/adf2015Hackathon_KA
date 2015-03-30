@@ -7,7 +7,7 @@ var abs = Math.abs,
 	teamMemberCounts = [0, 0, 0, 0],
 	teamScores = [0, 0, 0, 0];
 
-function Game() {
+function Game(io) {
 	if (!(this instanceof Game)) return new Game();
 
 	/**
