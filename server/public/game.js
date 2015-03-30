@@ -7,21 +7,26 @@ var abs = Math.abs,
 	sqrt = Math.sqrt,
 	pow = Math.pow;
 
-function Game(width, height) {
+function Game() {
 	this.canvas;
-	this.users = [];
 	this.pads = [
-		new Pad(0, 0, 0, 1, 1),
-		new Pad(0, 0, 10, 1, 1),
-		new Pad(0, 10, 0, 1, 1),
-		new Pad(0, 10, 10, 1, 1)
+		new Pad(0, 0, 0, 40, 24),
+		new Pad(1, 0, 50, 53, 10),
+		new Pad(2, 50, 0, 23, 27),
+		new Pad(3, 50, 50, -25, 28)
 	];
-	this.width = width;
-	this.height = height;
+	this.width = 500;
+	this.height = 500;
+	this.me;
+
+	this.flagLeftKey = false;
+	this.flagUpKey = false;
+	this.flagRightKey = false;
+	this.flagDownKey = false;
 
 	setInterval(function() {
 		this.update();
-	}.bind(this), 60);
+	}.bind(this), 16);
 };
 
 Game.instance_;
@@ -31,21 +36,93 @@ Game.getInstance = function() {
 	return Game.instance_ = new Game();
 };
 
+Game.prototype.onKeyDown = function(keyCode) {
+	var KEYCODE_LEFT = 37,
+		KEYCODE_UP = 38,
+		KEYCODE_RIGHT = 39,
+		KEYCODE_DOWN = 40;
+
+	switch (keyCode) {
+		case KEYCODE_LEFT:
+			this.flagLeftKey = true;
+			break;
+
+		case KEYCODE_UP:
+			this.flagUpKey = true;
+			break;
+
+		case KEYCODE_RIGHT:
+			this.flagRightKey = true;
+			break;
+
+		case KEYCODE_DOWN:
+			this.flagDownKey = true;
+			break;
+	}
+};
+
+Game.prototype.onKeyUp = function(keyCode) {
+	var KEYCODE_LEFT = 37,
+		KEYCODE_UP = 38,
+		KEYCODE_RIGHT = 39,
+		KEYCODE_DOWN = 40;
+
+	switch (keyCode) {
+		case KEYCODE_LEFT:
+			this.flagLeftKey = false;
+			break;
+
+		case KEYCODE_UP:
+			this.flagUpKey = false;
+			break;
+
+		case KEYCODE_RIGHT:
+			this.flagRightKey = false;
+			break;
+
+		case KEYCODE_DOWN:
+			this.flagDownKey = false;
+			break;
+	}
+};
+
 Game.prototype.update = function() {
+	this.updateUserPositions();
 	this.updatePadPositions();
-	Canvas.drawField(this.users, this.pads);
+	Canvas.drawField(app.room.users, this.pads);
+};
+
+Game.prototype.updateUserPositions = function() {
+	var me = this.me;
+
+	if (this.flagLeftKey) me.x -= User.SPEED * 0.06;
+	if (this.flagUpKey) me.y -= User.SPEED * 0.06;
+	if (this.flagRightKey) me.x += User.SPEED * 0.06;
+	if (this.flagDownKey) me.y += User.SPEED * 0.06;
+
+	if (this.flagLeftKey || this.flagUpKey || this.flagRightKey || this.flagDownKey) {
+		var payload = {
+			x: me.x,
+			y: me.y
+		};
+		app.socket.emit('userMoved', payload);
+	}
 };
 
 Game.prototype.updatePadPositions = function() {
 	var pads = this.pads,
-		users = this.users,
-		l, dAbs, ix, iy,
-		COLLISTION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2);
+		users = app.room.users,
+		l, dAbs, dAbs1, dAbs2, ix, iy,
+		width = this.width,
+		height = this.height,
+		COLLISION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2),
+		PAD_COLLISION_LENGTH2 = pow(Pad.RADIUS + Pad.RADIUS, 2),
+		i, j, max, pad1, pad2;
 
 	pads.forEach(function(pad) {
 		//padの位置の更新
-		pad.x += pad.vx;
-		pad.y += pad.vy;
+		pad.x += pad.vx * 0.06;
+		pad.y += pad.vy * 0.06;
 
 		//反射計算
 		if (pad.x <= Pad.RADIUS) {
@@ -56,25 +133,45 @@ Game.prototype.updatePadPositions = function() {
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
 		}
-		if (pad.x >= this.width - Pad.RADIUS) {
-			pad.x = this.width - Pad.RADIUS;
+		if (pad.x >= width - Pad.RADIUS) {
+			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
 		}
-		if (pad.y >= this.height - Pad.RADIUS) {
-			pad.y = this.height - Pad.RADIUS;
+		if (pad.y >= height - Pad.RADIUS) {
+			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
 		}
 
 		//ユーザーとの反射計算(あってるか謎)
 		users.forEach(function(user) {
-			if (pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2) <= COLLISTION_LENGTH2) {
+			if (pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2) <= COLLISION_LENGTH2) {
 				l = sqrt(pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2));
 				ix = (pad.x - user.x) / l;
 				iy = (pad.y - user.y) / l;
-				dAbs = ((pad.x - user.x) * user.vx + (pad.y - user.y) * user.vy) / l * 2;
-				pad.vx += ix * dAbas;
-				pad.vy += iy * dAbas;
+				dAbs = ((pad.x - user.x) * pad.vx + (pad.y - user.y) * pad.vy) / l * 2;
+				pad.vx -= ix * dAbs;
+				pad.vy -= iy * dAbs;
+				pad.x += pad.vx * 0.12;
+				pad.y += pad.vy * 0.12;
 			}
 		});
 	});
+
+	//パッド同士の衝突
+	for (i = 0, max = pads.length; i < max; i++) {
+		for (j = 0, max = pads.length; j < max; j++) {
+			if (i == j) continue;
+			pad1 = pads[i];
+			pad2 = pads[j];
+
+			if (pow(pad1.x - pad2.x, 2) + pow(pad1.y - pad2.y, 2) <= PAD_COLLISION_LENGTH2) {
+				l = sqrt(pow(pad1.x - pad2.x, 2) + pow(pad1.y - pad2.y, 2));
+				ix = (pad1.x - pad2.x) / l;
+				iy = (pad1.y - pad2.y) / l;
+				dAbs = ((pad1.x - pad2.x) * pad1.vx + (pad1.y - pad2.y) * pad1.vy) / l * 2;
+				pad1.vx -= ix * dAbs;
+				pad1.vy -= iy * dAbs;
+			}
+		}
+	}
 };

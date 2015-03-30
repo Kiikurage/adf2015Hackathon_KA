@@ -1,11 +1,16 @@
-function Room(socket) {
+function Room(socket, me) {
 	/**
 	 *  ソケット
 	 *	@type {Socket}
 	 */
 	this.socket = socket;
 
+	this.me = me;
+
 	this.game = Game.getInstance();
+	this.game.me = me;
+
+	this.users = [];
 
 	this.initEventHandler_();
 	this.updateUserList();
@@ -25,27 +30,36 @@ Room.prototype.initEventHandler_ = function() {
  *　ユーザー一覧を更新する
  */
 Room.prototype.updateUserList = function() {
+	var self = this;
+
 	this.socket.emit('getUserList', function(userList) {
+		var users = [];
+
 		Object.keys(userList).forEach(function(userId) {
 			var userName = userList[userId],
 				user = new User(userId, userName);
 
-			if (userId === app.me.id) return;
-
-			console.log('getUserList >> %s: %s', userId, userName);
+			users.push(user);
 		});
+
+		console.log(users);
+		self.users = users;
 	});
+
 };
 
 /**
  *	サーバーからのenterUserメッセージに対するハンドラ
  *	@param {string} userId ユーザーのID
  *	@param {string} userName ユーザーの名前
+ *	@param {number} x 位置
+ *	@param {number} y 位置
  */
-Room.prototype.onEnterUser = function(userId, userName) {
-	var newUser = new User(userId, userName);
-
-	console.log('onEnterUser >> %s: %s', userId, userName);
+Room.prototype.onEnterUser = function(data) {
+	var newUser = new User(data.userId, data.userName, data.x, data.y);
+	console.log(data);
+	console.log(newUser);
+	this.users.push(newUser);
 };
 
 /**
@@ -53,10 +67,15 @@ Room.prototype.onEnterUser = function(userId, userName) {
  *	@param {string} userId ユーザーのID
  */
 Room.prototype.onLeaveUser = function(userId, userName) {
-	var leftUser = User.removeById(userId);
+	var leftUser = User.removeById(userId),
+		index;
 	if (!leftUser) return
 
-	console.log('onLeaveUser >> %s: %s', userId, userName);
+	var index = this.users.indexOf(leftUser);
+
+	if (index !== -1) {
+		this.users.splice(index, 1);
+	}
 };
 
 /**
@@ -64,5 +83,9 @@ Room.prototype.onLeaveUser = function(userId, userName) {
  *
  */
 Room.prototype.onUserMoved = function(data) {
-	console.log(data);
+	var movedUser = User.getById(data.userId);
+	if (!movedUser) return
+
+	movedUser.x = data.x;
+	movedUser.y = data.y;
 };

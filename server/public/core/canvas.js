@@ -6,8 +6,8 @@ Canvas = function() {};
 
 Canvas.fieldOx = 25;
 Canvas.fieldOy = 25;
-Canvas.fieldWidth = 1000;
-Canvas.fieldHeight = 1000;
+Canvas.fieldWidth = 500;
+Canvas.fieldHeight = 500;
 
 Canvas.goalSize = 100;
 Canvas.barWidth = 30;
@@ -55,8 +55,10 @@ Canvas.drawField = function(users, pads) {
 	for (i = 0; i < 10; i++) {
 		var x = Math.round(Math.random() * Canvas.fieldWidth - userRadius);
 		var y = Math.round(Math.random() * (Canvas.fieldHeight - userRadius));
-		Canvas.drawUser(x, y, i < 5 ? "blue" : "red");
 	}
+	users.forEach(function(user) {
+		Canvas.drawUser(user.x, user.y, i < 5 ? "blue" : "red");
+	});
 	pads.forEach(function(pad) {
 		Canvas.drawPad(pad.x, pad.y);
 	});
@@ -67,6 +69,9 @@ Canvas.drawField = function(users, pads) {
 Canvas.drawUser = function(x, y, color) {
 	var canvas = document.getElementById('canvasField'),
 		userRadius = User.RADIUS;
+
+	x += Canvas.fieldOx;
+	y += Canvas.fieldOy;
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
@@ -84,6 +89,9 @@ Canvas.drawUser = function(x, y, color) {
 Canvas.drawPad = function(x, y) {
 	var padRadius = Pad.RADIUS;
 	var canvas = document.getElementById('canvasField');
+
+	x += Canvas.fieldOx;
+	y += Canvas.fieldOy;
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
