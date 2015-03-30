@@ -1,4 +1,4 @@
-function User(id, name) {
+function User(id, name, x, y, teamId) {
 	if (User.getById(id)) return User.getById(id);
 	User.records_[id] = this;
 
@@ -13,6 +13,10 @@ function User(id, name) {
 	 * @type {string}
 	 */
 	this.name = name;
+
+	this.x = x;
+	this.y = y;
+	this.teamId = teamId;
 }
 
 /**
