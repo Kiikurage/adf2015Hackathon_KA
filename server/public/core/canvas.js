@@ -16,7 +16,19 @@ Canvas.colors = [
 	'#0F0',
 	'#00F',
 	'#FF0'
-]
+];
+
+// Canvas.images = [
+// 	new Image(),
+// 	new Image(),
+// 	new Image(),
+// 	new Image()
+// ];
+//
+// images[0].src = 'img/red.png';
+// images[1].src = 'img/green.png';
+// images[2].src = 'img/blue.png';
+// images[3].src = 'img/yellow.png';
 
 //フィールドを描画
 Canvas.drawField = function(users, pads) {
@@ -118,7 +130,7 @@ Canvas.drawUser = function(user) {
 		ctx.fillStyle = Canvas.colors[user.teamId];
 		ctx.fill();
 		ctx.stroke();
-
+		// ctx.drawImage(Canvas.images[user.teamId], x - userRadius, y - userRadius, 2 * userRadius, 2 * userRadius);
 	}
 };
 
