@@ -6,12 +6,10 @@ Canvas = function() {};
 
 Canvas.fieldOx = 100;
 Canvas.fieldOy = 100;
-Canvas.fieldWidth = 1000;
-Canvas.fieldHeight = 1000;
 
 Canvas.goalSize = 100;
 Canvas.barWidth = 30;
-Canvas.sideLength = Canvas.fieldWidth / 2 - Canvas.barWidth;
+Canvas.sideLength = Game.WIDTH / 2 - Canvas.barWidth;
 
 
 //フィールドを描画
@@ -23,22 +21,22 @@ Canvas.drawField = function(users, pads) {
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
-		ctx.clearRect(0, 0, Canvas.fieldWidth + 2 * Canvas.barWidth, Canvas.fieldHeight + 2 * Canvas.barWidth);
+		ctx.clearRect(0, 0, Game.WIDTH + 2 * Canvas.barWidth, Game.HEIGHT + 2 * Canvas.barWidth);
 
 		//Draw Field
 		//strokeRect(x, y, width, height)
 		ctx.fillStyle = "black";
 
-		ctx.fillRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy - Canvas.barWidth, Canvas.fieldWidth + 2 * Canvas.barWidth, Canvas.fieldHeight + 2 * Canvas.barWidth);
-		ctx.clearRect(Canvas.fieldOx, Canvas.fieldOy, Canvas.fieldWidth, Canvas.fieldHeight);
+		ctx.fillRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy - Canvas.barWidth, Game.WIDTH + 2 * Canvas.barWidth, Game.HEIGHT + 2 * Canvas.barWidth);
+		ctx.clearRect(Canvas.fieldOx, Canvas.fieldOy, Game.WIDTH, Game.HEIGHT);
 
 		//DrawGoals
 		//上下
 		ctx.clearRect(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy - Canvas.barWidth, Canvas.goalSize, Canvas.barWidth);
-		ctx.clearRect(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy + Canvas.fieldHeight, Canvas.goalSize, Canvas.barWidth);
+		ctx.clearRect(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy + Game.HEIGHT, Canvas.goalSize, Canvas.barWidth);
 		//左右
 		ctx.clearRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
-		ctx.clearRect(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
+		ctx.clearRect(Canvas.fieldOx + Game.WIDTH, Canvas.fieldOy + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
 
 		//Goal Area
 		//arc(x, y, radius, startAngle, endAngle, anticlockwise) HELP
@@ -46,30 +44,30 @@ Canvas.drawField = function(users, pads) {
 		//上下
 		ctx.moveTo(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy);
 		ctx.arc(Canvas.fieldOx + Canvas.sideLength + Canvas.goalSize / 2, Canvas.fieldOy, Canvas.goalSize / 2, 0, Math.PI, false);
-		ctx.moveTo(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy + Canvas.fieldHeight);
-		ctx.arc(Canvas.fieldOx + Canvas.sideLength + Canvas.goalSize / 2, Canvas.fieldOy + Canvas.fieldHeight, Canvas.goalSize / 2, 0, Math.PI, true);
+		ctx.moveTo(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy + Game.HEIGHT);
+		ctx.arc(Canvas.fieldOx + Canvas.sideLength + Canvas.goalSize / 2, Canvas.fieldOy + Game.HEIGHT, Canvas.goalSize / 2, 0, Math.PI, true);
 
 		//左右
 		ctx.moveTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.sideLength);
 		ctx.arc(Canvas.fieldOx, Canvas.fieldOy + Canvas.sideLength + Canvas.goalSize / 2, Canvas.goalSize / 2, Math.PI / 2, -Math.PI / 2, true);
-		ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.sideLength);
-		ctx.arc(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.sideLength + Canvas.goalSize / 2, Canvas.goalSize / 2, Math.PI / 2, -Math.PI / 2, false);
+		ctx.moveTo(Canvas.fieldOx + Game.WIDTH, Canvas.fieldOy + Canvas.sideLength);
+		ctx.arc(Canvas.fieldOx + Game.WIDTH, Canvas.fieldOy + Canvas.sideLength + Canvas.goalSize / 2, Canvas.goalSize / 2, Math.PI / 2, -Math.PI / 2, false);
 		//ctx.stroke();
 		//ctx.closePath();
 
 		// ctx.beginPath();
 		// ctx.moveTo(Canvas.fieldOx + Canvas.sideLength + Canvas.goalSize/2, Canvas.fieldOy - Canvas.barWidth);
-		// ctx.lineTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.fieldHeight);
-		// ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy);
-		// ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.fieldWidth);
+		// ctx.lineTo(Canvas.fieldOx + Game.WIDTH, Canvas.fieldOy + Game.HEIGHT);
+		// ctx.moveTo(Canvas.fieldOx + Game.WIDTH, Canvas.fieldOy);
+		// ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Game.WIDTH);
 		// ctx.stroke();
 
 		//Draw Cross
 		//ctx.beginPath();
 		ctx.moveTo(Canvas.fieldOx, Canvas.fieldOy);
-		ctx.lineTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.fieldHeight);
-		ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy);
-		ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.fieldWidth);
+		ctx.lineTo(Canvas.fieldOx + Game.WIDTH, Canvas.fieldOy + Game.HEIGHT);
+		ctx.moveTo(Canvas.fieldOx + Game.WIDTH, Canvas.fieldOy);
+		ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Game.WIDTH);
 		ctx.stroke();
 
 
