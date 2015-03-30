@@ -21,7 +21,6 @@ function Game(width, height) {
 
 	setInterval(function() {
 		this.update();
-		drawField(this.users, this.pads);
 	}.bind(this), 60);
 };
 
@@ -33,6 +32,11 @@ Game.getInstance = function() {
 };
 
 Game.prototype.update = function() {
+	Game.updatePadPositions();
+	Canvas.draw();
+};
+
+Game.prototype.updatePadPositions = function() {
 	var pads = this.pads,
 		users = this.users,
 		l, dAbs, ix, iy,
