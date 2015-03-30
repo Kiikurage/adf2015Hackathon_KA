@@ -113,8 +113,8 @@ Game.prototype.updateUserPositions = function() {
 		if (x < 20) {
 			return 20;
 		}
-		if (x > 380) {
-			return 380;
+		if (x > 580) {
+			return 580;
 		}
 		return x;
 	};
