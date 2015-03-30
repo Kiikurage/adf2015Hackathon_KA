@@ -148,8 +148,8 @@ Game.prototype.updatePadPositions = function() {
 	var pads = this.pads,
 		users = this.users,
 		l, dAbs, dAbs1, dAbs2, ix, iy,
-		width = Game.WIDTH,
-		height = Game.HEIGHT,
+		width = 600,
+		height = 600,
 		COLLISION_LENGTH2 = Math.pow(Pad.RADIUS + User.RADIUS, 2),
 		PAD_COLLISION_LENGTH2 = Math.pow(Pad.RADIUS + Pad.RADIUS, 2),
 		i, j, max, pad1, pad2;
@@ -164,7 +164,7 @@ Game.prototype.updatePadPositions = function() {
 			// 左の壁にあたった
 			pad.x = Pad.RADIUS;
 			pad.vx *= -1;
-			if (config.sideLength <= pad.y && pad.y <= config.sideLength + config.goalSize) {
+      if (pad.y > 250 && pad.y < 350) {
 				teamScores[0]++;
 				teamScores[1]++;
 				teamScores[2]++;
@@ -174,7 +174,7 @@ Game.prototype.updatePadPositions = function() {
 			// 上の壁にあたった
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
-			if (config.sideLength <= pad.x && pad.x <= config.sideLength + config.goalSize) {
+			if (pad.x > 250 && pad.x < 350) {
 				teamScores[1]++;
 				teamScores[2]++;
 				teamScores[3]++;
@@ -184,17 +184,17 @@ Game.prototype.updatePadPositions = function() {
 			// 右の壁にあたった
 			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
-			if (config.sideLength <= pad.y && pad.y <= config.sideLength + config.goalSize) {
+      if (pad.y > 250 && pad.y < 350) {
 				teamScores[0]++;
 				teamScores[2]++;
 				teamScores[3]++;
 			}
 		}
 		if (pad.y >= height - Pad.RADIUS) {
-			// 左の壁にあたった
+			// 下の壁にあたった
 			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
-			if (config.sideLength <= pad.x && pad.x <= config.sideLength + config.goalSize) {
+			if (pad.x > 250 && pad.x < 350) {
 				teamScores[0]++;
 				teamScores[1]++;
 				teamScores[3]++;
