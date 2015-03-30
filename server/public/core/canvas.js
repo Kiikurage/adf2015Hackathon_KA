@@ -4,12 +4,12 @@
 
 Canvas = function() {};
 
-Canvas.fieldOx = 100;
-Canvas.fieldOy = 100;
+Canvas.fieldOx = config.fieldOx;
+Canvas.fieldOy = config.fieldOy;
 
-Canvas.goalSize = 100;
-Canvas.barWidth = 30;
-Canvas.sideLength = Game.WIDTH / 2 - Canvas.barWidth;
+Canvas.goalSize = config.goalSize;
+Canvas.barWidth = config.barWidth;
+Canvas.sideLength = (Game.WIDTH - Canvas.goalSize) / 2;
 
 Canvas.colors = [
 	'#F00',
