@@ -1,30 +1,32 @@
-const userRadius = 30;
-const padRadius = 10;
 //左上座標と幅、高さ
-const fieldOx = 25;
-const fieldOy = 25;
-const fieldWidth = 1000;
-const fieldHeight = 1000;
 
 //var canvas = document.getElementById('canvasField');
 
+Canvas = function() {};
+
+Canvas.fieldOx = 25;
+Canvas.fieldOy = 25;
+Canvas.fieldWidth = 1000;
+Canvas.fieldHeight = 1000;
+
 //フィールドを描画
-function drawField(users, pads) {
+Canvas.drawField = function(users, pads) {
 	//if (!(this instanceof drawField)) return new drawField(socket);
 
-	var canvas = document.getElementById('canvasField');
+	var canvas = document.getElementById('canvasField'),
+		userRadius = User.RADIUS;
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
 
 		//strokeRect(x, y, width, height)
 		ctx.fillStyle = "yellow";
-		ctx.strokeRect(fieldOx, fieldOy, fieldWidth, fieldHeight);
+		ctx.strokeRect(Canvas.fieldOx, Canvas.fieldOy, Canvas.fieldWidth, Canvas.fieldHeight);
 		ctx.beginPath();
-		ctx.moveTo(fieldOx, fieldOy);
-		ctx.lineTo(fieldOx + fieldWidth, fieldOy + fieldHeight);
-		ctx.moveTo(fieldOx + fieldWidth, fieldOy);
-		ctx.lineTo(fieldOx, fieldOy + fieldWidth);
+		ctx.moveTo(Canvas.fieldOx, Canvas.fieldOy);
+		ctx.lineTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.fieldHeight);
+		ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy);
+		ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.fieldWidth);
 		ctx.stroke();
 		//clearRect(x, y, width, height)
 		//ctx.clearRect(45,45,fieldWidth-100,fieldHeight-100);
@@ -32,23 +34,19 @@ function drawField(users, pads) {
 		// ctx.strokeRect(50,50,50,50);
 	}
 	for (i = 0; i < 10; i++) {
-		var x = Math.round(Math.random() * fieldWidth - userRadius);
-		var y = Math.round(Math.random() * (fieldHeight - userRadius));
-		drawUser(x, y, i < 5 ? "blue" : "red");
+		var x = Math.round(Math.random() * Canvas.fieldWidth - userRadius);
+		var y = Math.round(Math.random() * (Canvas.fieldHeight - userRadius));
+		Canvas.drawUser(x, y, i < 5 ? "blue" : "red");
 	}
 	pads.forEach(function(pad) {
-		drawPad(pad.x, pad.y);
+		Canvas.drawPad(pad.x, pad.y);
 	});
-	// for (i = 0; i < 2; i++) {
-	// 	var x = Math.round(Math.random() * fieldWidth - userRadius);
-	// 	var y = Math.round(Math.random() * (fieldHeight - userRadius));
-	// 	drawPad(x, y);
-	// }
-}
+};
 
 //x,y <- UserPosition
-function drawUser(x, y, color) {
-	var canvas = document.getElementById('canvasField');
+Canvas.drawUser = function(x, y, color) {
+	var canvas = document.getElementById('canvasField'),
+		userRadius = User.RADIUS;
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
@@ -61,11 +59,12 @@ function drawUser(x, y, color) {
 		ctx.stroke();
 
 	}
-}
+};
 
-function drawPad(x, y) {
-
+Canvas.drawPad = function(x, y) {
+	var padRadius = Pad.RADIUS;
 	var canvas = document.getElementById('canvasField');
+
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
 
@@ -76,4 +75,4 @@ function drawPad(x, y) {
 		ctx.fill();
 		ctx.stroke();
 	}
-}
+};
