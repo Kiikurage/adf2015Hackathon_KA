@@ -1,13 +1,10 @@
 var User = require('./User.js'),
 	Pad = require('./Pad.js');
 
-var abs = Math.abs,
-	sqrt = Math.sqrt,
-	pow = Math.power,
-	teamMemberCounts = [0, 0, 0, 0],
-	teamScores = [0, 0, 0, 0];
+	var teamMemberCounts = [0, 0, 0, 0],
+		teamScores = [0, 0, 0, 0];
 
-function Game() {
+function Game(io) {
 	if (!(this instanceof Game)) return new Game(socket);
 
 	/**
@@ -33,6 +30,8 @@ function Game() {
 	 *	@type {Array<Pad>}
 	 */
 	this.pads = [];
+
+	this.io = io;
 
 	// setInterval(this.sendPadPosition = this.sendPadPosition.bind(this), 5000);
 }
@@ -141,12 +140,12 @@ Game.prototype.getUsers = function() {
  */
 Game.prototype.updatePadPositions = function() {
 	var pads = this.pads,
-		users = app.room.users,
+		users = this.users,
 		l, dAbs, dAbs1, dAbs2, ix, iy,
 		width = Game.WIDTH,
 		height = Game.HEIGHT,
-		COLLISION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2),
-		PAD_COLLISION_LENGTH2 = pow(Pad.RADIUS + Pad.RADIUS, 2),
+		COLLISION_LENGTH2 = Math.pow(Pad.RADIUS + User.RADIUS, 2),
+		PAD_COLLISION_LENGTH2 = Math.pow(Pad.RADIUS + Pad.RADIUS, 2),
 		i, j, max, pad1, pad2;
 
 	pads.forEach(function(pad) {
@@ -198,15 +197,15 @@ Game.prototype.updatePadPositions = function() {
 
 		//ユーザーとの反射計算(あってるか謎)
 		users.forEach(function(user) {
-			if (pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2) <= COLLISION_LENGTH2) {
-				l = sqrt(pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2));
+			if (Math.pow(pad.x - user.x, 2) + Math.pow(pad.y - user.y, 2) <= COLLISION_LENGTH2) {
+				l = Math.sqrt(Math.pow(pad.x - user.x, 2) + Math.pow(pad.y - user.y, 2));
 				ix = (pad.x - user.x) / l;
 				iy = (pad.y - user.y) / l;
 				dAbs = ((pad.x - user.x) * pad.vx + (pad.y - user.y) * pad.vy) / l * 2;
 				pad.vx -= ix * dAbs;
 				pad.vy -= iy * dAbs;
-				pad.x = user.x + ix * sqrt(COLLISION_LENGTH2) * 1.1;
-				pad.y = user.y + iy * sqrt(COLLISION_LENGTH2) * 1.1;
+				pad.x = user.x + ix * Math.sqrt(COLLISION_LENGTH2) * 1.1;
+				pad.y = user.y + iy * Math.sqrt(COLLISION_LENGTH2) * 1.1;
 			}
 		});
 	});
@@ -218,8 +217,8 @@ Game.prototype.updatePadPositions = function() {
 			pad1 = pads[i];
 			pad2 = pads[j];
 
-			if (pow(pad1.x - pad2.x, 2) + pow(pad1.y - pad2.y, 2) <= PAD_COLLISION_LENGTH2) {
-				l = sqrt(pow(pad1.x - pad2.x, 2) + pow(pad1.y - pad2.y, 2));
+			if (Math.pow(pad1.x - pad2.x, 2) + Math.pow(pad1.y - pad2.y, 2) <= PAD_COLLISION_LENGTH2) {
+				l = Math.sqrt(Math.pow(pad1.x - pad2.x, 2) + Math.pow(pad1.y - pad2.y, 2));
 				ix = (pad1.x - pad2.x) / l;
 				iy = (pad1.y - pad2.y) / l;
 				dAbs1 = ((pad1.x - pad2.x) * pad1.vx + (pad1.y - pad2.y) * pad1.vy) / l * 2;
@@ -228,11 +227,13 @@ Game.prototype.updatePadPositions = function() {
 				pad1.vy -= iy * dAbs1;
 				pad2.vx += ix * dAbs2;
 				pad2.vy += iy * dAbs2;
-				pad1.x = pad2.x + ix * sqrt(PAD_COLLISION_LENGTH2) * 1.1;
-				pad1.y = pad2.y + iy * sqrt(PAD_COLLISION_LENGTH2) * 1.1;
+				pad1.x = pad2.x + ix * Math.sqrt(PAD_COLLISION_LENGTH2) * 1.1;
+				pad1.y = pad2.y + iy * Math.sqrt(PAD_COLLISION_LENGTH2) * 1.1;
 			}
 		}
 	}
+
+	this.io.emit('scoreUpdated', teamScores);
 };
 
 /**

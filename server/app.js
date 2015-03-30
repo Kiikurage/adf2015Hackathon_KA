@@ -6,7 +6,10 @@ var express = require('express'),
 
 app.use(express.static(__dirname + '/public'));
 
-var game = new Game();
+var game = new Game(io);
+setInterval(function() {
+	game.updatePadPositions()
+}, 16);
 
 io.on('connection', function(socket) {
 	socket.on('enterGame', function(name, x, y, response) {
