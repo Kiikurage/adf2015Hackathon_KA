@@ -11,12 +11,13 @@ function Pad(id, x, y, dx, dy)
 };
 
 Pad.records_ = {};
+Pad.RADIUS = 5;
 
-Pad.getById = function(padId) {
+Pad.prototype.getById = function(padId) {
 	return this.records_[padId] || null;
 };
 
-Pad.removeById = function(padId) {
+Pad.prototype.removeById = function(padId) {
 	var records = this.records_,
 		removedPad = records[padId];
 
@@ -25,17 +26,17 @@ Pad.removeById = function(padId) {
 	return removedPad;
 };
 
-Pad.setPosition = function(x, y) {
+Pad.prototype.setPosition = function(x, y) {
 	this.x = x;
 	this.y = y;
 };
 
-Pad.setVelocity = function(dx, dy) {
+Pad.prototype.setVelocity = function(dx, dy) {
 	this.dx = dx;
 	this.dy = dy;
 };
 /*
-Pad.update = function() {
+Pad.prototype.update = function() {
 	this.x += this.dx;
 	this.y += this.dy;
 };*/
