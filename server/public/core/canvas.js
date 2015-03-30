@@ -18,17 +18,17 @@ Canvas.colors = [
 	'#FF0'
 ];
 
-// Canvas.images = [
-// 	new Image(),
-// 	new Image(),
-// 	new Image(),
-// 	new Image()
-// ];
-//
-// images[0].src = 'img/red.png';
-// images[1].src = 'img/green.png';
-// images[2].src = 'img/blue.png';
-// images[3].src = 'img/yellow.png';
+Canvas.images = [
+	new Image(),
+	new Image(),
+	new Image(),
+	new Image()
+];
+
+Canvas.images[0].src = 'img/red.png';
+Canvas.images[1].src = 'img/green.png';
+Canvas.images[2].src = 'img/blue.png';
+Canvas.images[3].src = 'img/yellow.png';
 
 //フィールドを描画
 Canvas.drawField = function(users, pads) {
@@ -124,13 +124,13 @@ Canvas.drawUser = function(user) {
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
 
-		ctx.beginPath();
-		ctx.arc(x, y, userRadius, 0, Math.PI * 2, true);
-		//arc(x, y, radius, startAngle, endAngle, anticlockwise)
-		ctx.fillStyle = Canvas.colors[user.teamId];
-		ctx.fill();
-		ctx.stroke();
-		// ctx.drawImage(Canvas.images[user.teamId], x - userRadius, y - userRadius, 2 * userRadius, 2 * userRadius);
+		// ctx.beginPath();
+		// ctx.arc(x, y, userRadius, 0, Math.PI * 2, true);
+		// //arc(x, y, radius, startAngle, endAngle, anticlockwise)
+		// ctx.fillStyle = Canvas.colors[user.teamId];
+		// ctx.fill();
+		// ctx.stroke();
+		ctx.drawImage(Canvas.images[user.teamId], x - userRadius, y - userRadius, 2 * userRadius, 2 * userRadius);
 	}
 };
 
