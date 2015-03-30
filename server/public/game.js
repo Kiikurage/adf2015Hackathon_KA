@@ -131,37 +131,20 @@ Game.prototype.updatePadPositions = function() {
 
 		//反射計算
 		if (pad.x <= Pad.RADIUS) {
-			// 左の壁にあたった
 			pad.x = Pad.RADIUS;
 			pad.vx *= -1;
-			if (Canvas.fieldOy + Canvas.slideLength <= pad.y && pad.y <= Canvas.fieldOy + Canvas.slideLength + Canvas.goalSize) {
-				// ゴールに入った
-				console.log("Goal:Team4");
-			}
 		}
 		if (pad.y <= Pad.RADIUS) {
-			// 上の壁にあたった
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
-			if (Canvas.fieldOx + Canvas.slideLength <= pad.x && pad.x <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
-				console.log("Goal:Team1");
-			}
 		}
 		if (pad.x >= width - Pad.RADIUS) {
-			// 右の壁にあたった
 			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
-			if (Canvas.fieldOy + Canvas.slideLength <= pad.y && pad.y <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
-				console.log("Goal:Team2");
-			}
 		}
 		if (pad.y >= height - Pad.RADIUS) {
-			// 左の壁にあたった
 			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
-			if (Canvas.fieldOx + Canvas.slideLength <= pad.x && pad.x <= Canvas.fieldOx + Canvas.slideLength + Canvas.goalSize) {
-				console.log("Goal:Team3");
-			}
 		}
 
 		//ユーザーとの反射計算(あってるか謎)

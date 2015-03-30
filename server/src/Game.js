@@ -34,7 +34,7 @@ function Game() {
 	 */
 	this.pads = [];
 
-	setInterval(this.sendPadPosition = this.sendPadPosition.bind(this), 5000);
+	// setInterval(this.sendPadPosition = this.sendPadPosition.bind(this), 5000);
 }
 
 /**
@@ -89,7 +89,7 @@ Game.prototype.removeUser = function(user) {
 	if (index === -1) return;
 
 	var removedUser = this.users.splice(index, 1)[0];
-	this.teamMemberCounts[removedUser.team]--;
+	teamMemberCounts[removedUser.teamId]--;
 
 	user.socket.broadcast.emit('leaveUser', user.id, user.name);
 };
@@ -139,80 +139,114 @@ Game.prototype.getUsers = function() {
 /**
  *	パッドの位置計算
  */
-Game.prototype.updatePadsPosition = function() {
+Game.prototype.updatePadPositions = function() {
 	var pads = this.pads,
-		users = this.users,
-		l, dAbs, ix, iy,
-		COLLISTION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2);
+		users = app.room.users,
+		l, dAbs, dAbs1, dAbs2, ix, iy,
+		width = Game.WIDTH,
+		height = Game.HEIGHT,
+		COLLISION_LENGTH2 = pow(Pad.RADIUS + User.RADIUS, 2),
+		PAD_COLLISION_LENGTH2 = pow(Pad.RADIUS + Pad.RADIUS, 2),
+		i, j, max, pad1, pad2;
 
 	pads.forEach(function(pad) {
 		//padの位置の更新
-		pad.x += pad.vx;
-		pad.y += pad.vy;
+		pad.x += pad.vx * 0.1;
+		pad.y += pad.vy * 0.1;
 
 		//反射計算
 		if (pad.x <= Pad.RADIUS) {
+			// 左の壁にあたった
 			pad.x = Pad.RADIUS;
 			pad.vx *= -1;
+			if (Canvas.sideLength <= pad.y && pad.y <= Canvas.sideLength + Canvas.goalSize) {
+				teamScores[0]++;
+				teamScores[1]++;
+				teamScores[2]++;
+			}
 		}
 		if (pad.y <= Pad.RADIUS) {
+			// 上の壁にあたった
 			pad.y = Pad.RADIUS;
 			pad.vy *= -1;
+			if (Canvas.sideLength <= pad.x && pad.x <= Canvas.sideLength + Canvas.goalSize) {
+				teamScores[1]++;
+				teamScores[2]++;
+				teamScores[3]++;
+			}
 		}
-		if (pad.x >= this.width - Pad.RADIUS) {
-			pad.x = this.width - Pad.RADIUS;
+		if (pad.x >= width - Pad.RADIUS) {
+			// 右の壁にあたった
+			pad.x = width - Pad.RADIUS;
 			pad.vx *= -1;
+			if (Canvas.sideLength <= pad.y && pad.y <= Canvas.sideLength + Canvas.goalSize) {
+				teamScores[0]++;
+				teamScores[2]++;
+				teamScores[3]++;
+			}
 		}
-		if (pad.y >= this.height - Pad.RADIUS) {
-			pad.y = this.height - Pad.RADIUS;
+		if (pad.y >= height - Pad.RADIUS) {
+			// 左の壁にあたった
+			pad.y = height - Pad.RADIUS;
 			pad.vy *= -1;
+			if (Canvas.sideLength <= pad.x && pad.x <= Canvas.sideLength + Canvas.goalSize) {
+				teamScores[0]++;
+				teamScores[1]++;
+				teamScores[3]++;
+			}
 		}
 
 		//ユーザーとの反射計算(あってるか謎)
-		if (pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2) <= COLLISTION_LENGTH2) {
-			l = sqrt(pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2));
-			ix = (pad.x - user.x) / l;
-			iy = (pad.y - user.y) / l;
-			dAbs = ((pad.x - user.x) * user.vx + (pad.y - user.y) * user.vy) / l * 2;
-			pad.vx += ix * dAbas;
-			pad.vy += iy * dAbas;
-		}
+		users.forEach(function(user) {
+			if (pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2) <= COLLISION_LENGTH2) {
+				l = sqrt(pow(pad.x - user.x, 2) + pow(pad.y - user.y, 2));
+				ix = (pad.x - user.x) / l;
+				iy = (pad.y - user.y) / l;
+				dAbs = ((pad.x - user.x) * pad.vx + (pad.y - user.y) * pad.vy) / l * 2;
+				pad.vx -= ix * dAbs;
+				pad.vy -= iy * dAbs;
+				pad.x = user.x + ix * sqrt(COLLISION_LENGTH2) * 1.1;
+				pad.y = user.y + iy * sqrt(COLLISION_LENGTH2) * 1.1;
+			}
+		});
 	});
-};
 
-/**
- *	全ユーザーに配信する
- *	@param {string} message メッセージ
- *	@param {*} data データ
- */
-Game.prototype.emitAll = function(message, data) {
-	var args = arguments;
-	// this.users.forEach(function(user) {
-	// 	user.socket.emit.apply(user, args);
-	// });
+	//パッド同士の衝突
+	for (i = 0, max = pads.length; i < max; i++) {
+		for (j = i + 1; j < max; j++) {
+			if (i == j) continue;
+			pad1 = pads[i];
+			pad2 = pads[j];
+
+			if (pow(pad1.x - pad2.x, 2) + pow(pad1.y - pad2.y, 2) <= PAD_COLLISION_LENGTH2) {
+				l = sqrt(pow(pad1.x - pad2.x, 2) + pow(pad1.y - pad2.y, 2));
+				ix = (pad1.x - pad2.x) / l;
+				iy = (pad1.y - pad2.y) / l;
+				dAbs1 = ((pad1.x - pad2.x) * pad1.vx + (pad1.y - pad2.y) * pad1.vy) / l * 2;
+				dAbs2 = ((pad2.x - pad1.x) * pad2.vx + (pad2.y - pad1.y) * pad2.vy) / l * 2;
+				pad1.vx -= ix * dAbs1;
+				pad1.vy -= iy * dAbs1;
+				pad2.vx += ix * dAbs2;
+				pad2.vy += iy * dAbs2;
+				pad1.x = pad2.x + ix * sqrt(PAD_COLLISION_LENGTH2) * 1.1;
+				pad1.y = pad2.y + iy * sqrt(PAD_COLLISION_LENGTH2) * 1.1;
+			}
+		}
+	}
 };
 
 /**
  *	パッドの位置を配信する
  */
-Game.prototype.sendPadPosition = function() {
-	var positionMap = {};
-	this.pads.forEach(function(pad) {
-		positionMap[pad.id] = {
-			x: pad.x,
-			y: pad.y
-		}
-	});
-	this.emitAll('padsPosition', positionMap);
-};
-
-/**
- *	更新処理
- */
-Game.prototype.update = function() {
-	this.updatePadsPosition();
-};
-
-
+// Game.prototype.sendPadPosition = function() {
+// 	var positionMap = {};
+// 	this.pads.forEach(function(pad) {
+// 		positionMap[pad.id] = {
+// 			x: pad.x,
+// 			y: pad.y
+// 		}
+// 	});
+// 	this.emitAll('padsPosition', positionMap);
+// };
 
 module.exports = Game;
