@@ -28,16 +28,16 @@ Canvas.drawField = function(users, pads) {
 		//Draw Field
 		//strokeRect(x, y, width, height)
 		ctx.fillStyle = "black";
-		ctx.fillRect(Canvas.fieldOx, Canvas.fieldOy, Canvas.fieldWidth, Canvas.fieldHeight);
-		ctx.clearRect(Canvas.fieldOx + Canvas.barWidth , Canvas.fieldOy + Canvas.barWidth, Canvas.fieldWidth - 2*Canvas.barWidth, Canvas.fieldHeight - 2*Canvas.barWidth);
+		ctx.fillRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy - Canvas.barWidth, Canvas.fieldWidth + 2*Canvas.barWidth, Canvas.fieldHeight + 2* Canvas.barWidth);
+		ctx.clearRect(Canvas.fieldOx , Canvas.fieldOy, Canvas.fieldWidth , Canvas.fieldHeight);
 
 		//DrawGoals
 		//上下
-		ctx.clearRect(Canvas.fieldOx + Canvas.barWidth + Canvas.sideLength, Canvas.fieldOy, Canvas.goalSize, Canvas.barWidth);
-		ctx.clearRect(Canvas.fieldOx + Canvas.barWidth + Canvas.sideLength, Canvas.fieldOy + Canvas.fieldHeight - Canvas.barWidth, Canvas.goalSize, Canvas.barWidth);
+		ctx.clearRect(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy - Canvas.barWidth, Canvas.goalSize, Canvas.barWidth);
+		ctx.clearRect(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy + Canvas.fieldHeight, Canvas.goalSize, Canvas.barWidth);
 		//左右
-		ctx.clearRect(Canvas.fieldOx, Canvas.fieldOy + Canvas.barWidth + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
-		ctx.clearRect(Canvas.fieldOx + Canvas.fieldWidth - Canvas.barWidth, Canvas.fieldOy + Canvas.barWidth + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
+		ctx.clearRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
+		ctx.clearRect(Canvas.fieldOx + Canvas.fieldWidth , Canvas.fieldOy+ Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
 
 		//Draw Cross
 		ctx.beginPath();
