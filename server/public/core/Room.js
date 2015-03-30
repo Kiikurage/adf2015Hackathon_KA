@@ -83,5 +83,8 @@ Room.prototype.onUserMoved = function(data) {
 };
 
 Room.prototype.onScoreUpdated = function(scores) {
-  console.log(scores);
+	document.querySelector('#score1').textContent = scores[0];
+	document.querySelector('#score2').textContent = scores[1];
+	document.querySelector('#score3').textContent = scores[2];
+	document.querySelector('#score4').textContent = scores[3];
 };
