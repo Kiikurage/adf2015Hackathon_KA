@@ -42,7 +42,6 @@ Room.prototype.updateUserList = function() {
 			users.push(user);
 		});
 
-		console.log(users);
 		self.users = users;
 	});
 
@@ -57,8 +56,6 @@ Room.prototype.updateUserList = function() {
  */
 Room.prototype.onEnterUser = function(data) {
 	var newUser = new User(data.userId, data.userName, data.x, data.y);
-	console.log(data);
-	console.log(newUser);
 	this.users.push(newUser);
 };
 
@@ -84,7 +81,7 @@ Room.prototype.onLeaveUser = function(userId, userName) {
  */
 Room.prototype.onUserMoved = function(data) {
 	var movedUser = User.getById(data.userId);
-	if (!movedUser) return
+	if (!movedUser || movedUser.id === this.me.id) return
 
 	movedUser.x = data.x;
 	movedUser.y = data.y;

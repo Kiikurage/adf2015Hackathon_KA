@@ -8,13 +8,13 @@ var abs = Math.abs,
 	pow = Math.pow;
 
 function Game() {
-	this.canvas;
 	this.pads = [
 		new Pad(0, 0, 0, 40, 24),
 		new Pad(1, 0, 50, 53, 10),
 		new Pad(2, 50, 0, 23, 27),
 		new Pad(3, 50, 50, -25, 28)
 	];
+	for (i = 0; i < 100; i++) this.pads.push(new Pad(i, Math.random() * 500, Math.random() * 500, Math.random() * 100 - 50, Math.random() * 100 - 50));
 	this.width = 500;
 	this.height = 500;
 	this.me;
@@ -95,10 +95,10 @@ Game.prototype.update = function() {
 Game.prototype.updateUserPositions = function() {
 	var me = this.me;
 
-	if (this.flagLeftKey) me.x -= User.SPEED * 0.06;
-	if (this.flagUpKey) me.y -= User.SPEED * 0.06;
-	if (this.flagRightKey) me.x += User.SPEED * 0.06;
-	if (this.flagDownKey) me.y += User.SPEED * 0.06;
+	if (this.flagLeftKey) me.x -= User.SPEED * 0.1;
+	if (this.flagUpKey) me.y -= User.SPEED * 0.1;
+	if (this.flagRightKey) me.x += User.SPEED * 0.1;
+	if (this.flagDownKey) me.y += User.SPEED * 0.1;
 
 	if (this.flagLeftKey || this.flagUpKey || this.flagRightKey || this.flagDownKey) {
 		var payload = {
@@ -121,8 +121,8 @@ Game.prototype.updatePadPositions = function() {
 
 	pads.forEach(function(pad) {
 		//padの位置の更新
-		pad.x += pad.vx * 0.06;
-		pad.y += pad.vy * 0.06;
+		pad.x += pad.vx * 0.1;
+		pad.y += pad.vy * 0.1;
 
 		//反射計算
 		if (pad.x <= Pad.RADIUS) {
@@ -151,15 +151,15 @@ Game.prototype.updatePadPositions = function() {
 				dAbs = ((pad.x - user.x) * pad.vx + (pad.y - user.y) * pad.vy) / l * 2;
 				pad.vx -= ix * dAbs;
 				pad.vy -= iy * dAbs;
-				pad.x += pad.vx * 0.12;
-				pad.y += pad.vy * 0.12;
+				pad.x = user.x + ix * sqrt(COLLISION_LENGTH2) * 1.1;
+				pad.y = user.y + iy * sqrt(COLLISION_LENGTH2) * 1.1;
 			}
 		});
 	});
 
 	//パッド同士の衝突
 	for (i = 0, max = pads.length; i < max; i++) {
-		for (j = 0, max = pads.length; j < max; j++) {
+		for (j = i + 1; j < max; j++) {
 			if (i == j) continue;
 			pad1 = pads[i];
 			pad2 = pads[j];
@@ -168,9 +168,14 @@ Game.prototype.updatePadPositions = function() {
 				l = sqrt(pow(pad1.x - pad2.x, 2) + pow(pad1.y - pad2.y, 2));
 				ix = (pad1.x - pad2.x) / l;
 				iy = (pad1.y - pad2.y) / l;
-				dAbs = ((pad1.x - pad2.x) * pad1.vx + (pad1.y - pad2.y) * pad1.vy) / l * 2;
-				pad1.vx -= ix * dAbs;
-				pad1.vy -= iy * dAbs;
+				dAbs1 = ((pad1.x - pad2.x) * pad1.vx + (pad1.y - pad2.y) * pad1.vy) / l * 2;
+				dAbs2 = ((pad2.x - pad1.x) * pad2.vx + (pad2.y - pad1.y) * pad2.vy) / l * 2;
+				pad1.vx -= ix * dAbs1;
+				pad1.vy -= iy * dAbs1;
+				pad2.vx += ix * dAbs2;
+				pad2.vy += iy * dAbs2;
+				pad1.x = pad2.x + ix * sqrt(PAD_COLLISION_LENGTH2) * 1.1;
+				pad1.y = pad2.y + iy * sqrt(PAD_COLLISION_LENGTH2) * 1.1;
 			}
 		}
 	}
