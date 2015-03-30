@@ -36,10 +36,10 @@ function Game(io) {
 	 *	@type {Array<Pad>}
 	 */
 	this.pads = [
-		new Pad(0, 0, 0, 40, 24),
-		new Pad(1, 0, 50, 53, 10),
-		new Pad(2, 50, 0, 23, 27),
-		new Pad(3, 50, 50, -25, 28)
+		new Pad(1, 0, 0, 40, 24),
+		new Pad(2, 0, 50, 53, 10),
+		new Pad(3, 50, 0, 23, 27),
+		new Pad(4, 50, 50, -25, 28)
 	];
 
 	this.io = io;
