@@ -46,7 +46,20 @@ Game.prototype.addUser = function(user) {
 	console.log('Game: add user');
 	console.log(user);
 
-	user.socket.broadcast.emit('enterUser', user.id, user.name);
+	var x = 0; // 適当な初期座標
+	var y = 0;
+
+	var payload = {
+		user: {
+			id: user.id,
+			name: user.name
+		},
+		pos: {
+			x: x,
+			y: y
+		}
+	};
+	user.socket.broadcast.emit('enterUser', payload);
 };
 
 /**

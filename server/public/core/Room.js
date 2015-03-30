@@ -55,7 +55,7 @@ Room.prototype.updateUserList = function() {
  *	@param {number} y 位置
  */
 Room.prototype.onEnterUser = function(data) {
-	var newUser = new User(data.userId, data.userName, data.x, data.y);
+	var newUser = new User(data.user.id, data.user.name, data.pos.x, data.pos.y);
 	this.users.push(newUser);
 };
 
