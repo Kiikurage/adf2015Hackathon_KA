@@ -4,14 +4,14 @@
 
 Canvas = function() {};
 
-Canvas.fieldOx = 25;
-Canvas.fieldOy = 25;
-Canvas.fieldWidth = 500;
-Canvas.fieldHeight = 500;
+Canvas.fieldOx = 100;
+Canvas.fieldOy = 100;
+Canvas.fieldWidth = 1000;
+Canvas.fieldHeight = 1000;
 
 Canvas.goalSize = 100;
 Canvas.barWidth = 30;
-Canvas.sideLength = Canvas.fieldWidth/2 - Canvas.barWidth;
+Canvas.sideLength = Canvas.fieldWidth / 2 - Canvas.barWidth;
 
 
 //フィールドを描画
@@ -23,13 +23,14 @@ Canvas.drawField = function(users, pads) {
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
-		ctx.clearRect(0, 0, Canvas.fieldWidth, Canvas.fieldHeight);
+		ctx.clearRect(0, 0, Canvas.fieldWidth + 2 * Canvas.barWidth, Canvas.fieldHeight + 2 * Canvas.barWidth);
 
 		//Draw Field
 		//strokeRect(x, y, width, height)
 		ctx.fillStyle = "black";
-		ctx.fillRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy - Canvas.barWidth, Canvas.fieldWidth + 2*Canvas.barWidth, Canvas.fieldHeight + 2* Canvas.barWidth);
-		ctx.clearRect(Canvas.fieldOx , Canvas.fieldOy, Canvas.fieldWidth , Canvas.fieldHeight);
+
+		ctx.fillRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy - Canvas.barWidth, Canvas.fieldWidth + 2 * Canvas.barWidth, Canvas.fieldHeight + 2 * Canvas.barWidth);
+		ctx.clearRect(Canvas.fieldOx, Canvas.fieldOy, Canvas.fieldWidth, Canvas.fieldHeight);
 
 		//DrawGoals
 		//上下
@@ -37,24 +38,45 @@ Canvas.drawField = function(users, pads) {
 		ctx.clearRect(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy + Canvas.fieldHeight, Canvas.goalSize, Canvas.barWidth);
 		//左右
 		ctx.clearRect(Canvas.fieldOx - Canvas.barWidth, Canvas.fieldOy + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
-		ctx.clearRect(Canvas.fieldOx + Canvas.fieldWidth , Canvas.fieldOy+ Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
+		ctx.clearRect(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.sideLength, Canvas.barWidth, Canvas.goalSize);
+
+		//Goal Area
+		//arc(x, y, radius, startAngle, endAngle, anticlockwise) HELP
+		ctx.beginPath();
+		//上下
+		ctx.moveTo(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy);
+		ctx.arc(Canvas.fieldOx + Canvas.sideLength + Canvas.goalSize / 2, Canvas.fieldOy, Canvas.goalSize / 2, 0, Math.PI, false);
+		ctx.moveTo(Canvas.fieldOx + Canvas.sideLength, Canvas.fieldOy + Canvas.fieldHeight);
+		ctx.arc(Canvas.fieldOx + Canvas.sideLength + Canvas.goalSize / 2, Canvas.fieldOy + Canvas.fieldHeight, Canvas.goalSize / 2, 0, Math.PI, true);
+
+		//左右
+		ctx.moveTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.sideLength);
+		ctx.arc(Canvas.fieldOx, Canvas.fieldOy + Canvas.sideLength + Canvas.goalSize / 2, Canvas.goalSize / 2, Math.PI / 2, -Math.PI / 2, true);
+		ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.sideLength);
+		ctx.arc(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.sideLength + Canvas.goalSize / 2, Canvas.goalSize / 2, Math.PI / 2, -Math.PI / 2, false);
+		//ctx.stroke();
+		//ctx.closePath();
+
+		// ctx.beginPath();
+		// ctx.moveTo(Canvas.fieldOx + Canvas.sideLength + Canvas.goalSize/2, Canvas.fieldOy - Canvas.barWidth);
+		// ctx.lineTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.fieldHeight);
+		// ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy);
+		// ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.fieldWidth);
+		// ctx.stroke();
 
 		//Draw Cross
-		ctx.beginPath();
+		//ctx.beginPath();
 		ctx.moveTo(Canvas.fieldOx, Canvas.fieldOy);
 		ctx.lineTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy + Canvas.fieldHeight);
 		ctx.moveTo(Canvas.fieldOx + Canvas.fieldWidth, Canvas.fieldOy);
 		ctx.lineTo(Canvas.fieldOx, Canvas.fieldOy + Canvas.fieldWidth);
 		ctx.stroke();
 
+
 		//clearRect(x, y, width, height)
 		//ctx.clearRect(45,45,fieldWidth-100,fieldHeight-100);
 
 		// ctx.strokeRect(50,50,50,50);
-	}
-	for (i = 0; i < 10; i++) {
-		var x = Math.round(Math.random() * Canvas.fieldWidth - userRadius);
-		var y = Math.round(Math.random() * (Canvas.fieldHeight - userRadius));
 	}
 	users.forEach(function(user) {
 		Canvas.drawUser(user.x, user.y, i < 5 ? "blue" : "red");
